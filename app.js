@@ -210,6 +210,16 @@ document.addEventListener("DOMContentLoaded", () => {
         if (navVal) navVal.style.display = "none";
         if (navShare) navShare.style.display = "none";
         
+        // Personalizar el mensaje de carga vacío para los invitados
+        const emptyTitle = document.querySelector("#cards-container .empty-state h3");
+        const emptyDesc = document.querySelector("#cards-container .empty-state p");
+        if (emptyTitle) emptyTitle.textContent = "Esperando al Organizador...";
+        if (emptyDesc) emptyDesc.textContent = "En cuanto el organizador comience la partida, tu cartón de juego se generará automáticamente aquí.";
+        
+        // Ocultar controles de cantidad y botones de generación del host para el invitado
+        const headerActions = document.querySelector(".header-actions");
+        if (headerActions) headerActions.style.display = "none";
+        
         // Forzar vista en pestaña de jugador (cartones)
         switchTab('player');
         
@@ -482,6 +492,14 @@ function startGame() {
             <p>Elige cuántos cartones quieres generar arriba y pulsa "Generar".</p>
         </div>
     `;
+
+    // Broadcast a los invitados conectados para sincronizar la partida
+    broadcastToGuests({
+        type: 'init-game',
+        songs: gameSongs,
+        playedSongs: [],
+        gridSize: document.getElementById("card-grid-size").value
+    });
 
     playSound('draw');
 }
@@ -1174,6 +1192,16 @@ function initHostPeer() {
         console.log('Invitado conectado:', connection.peer);
         hostConnections.push(connection);
         
+        // Si la partida ya ha empezado (tenemos canciones cargadas), enviar la lista de inmediato
+        if (gameSongs && gameSongs.length > 0) {
+            connection.send({
+                type: 'init-game',
+                songs: gameSongs,
+                playedSongs: playedSongs,
+                gridSize: document.getElementById("card-grid-size").value
+            });
+        }
+        
         connection.on('data', (data) => {
             if (data && data.type === 'emoji') {
                 showFloatingEmojiOnScreen(data.emoji);
@@ -1202,6 +1230,23 @@ function connectToRoom(hostRoomId) {
             console.log('Conexión establecida con el organizador');
         });
         
+        conn.on('data', (data) => {
+            if (data && data.type === 'init-game') {
+                console.log('Recibida lista de canciones del organizador:', data.songs);
+                gameSongs = data.songs;
+                playedSongs = data.playedSongs || [];
+                
+                // Forzar sincronización del tamaño de la cuadrícula si está presente en el selector
+                const sizeSelect = document.getElementById("card-grid-size");
+                if (sizeSelect && data.gridSize) {
+                    sizeSelect.value = data.gridSize;
+                }
+                
+                // Generar automáticamente un cartón para el jugador de forma instantánea
+                generatePlayerCards();
+            }
+        });
+        
         conn.on('error', (err) => {
             console.error('Conexión con el organizador falló:', err);
         });
@@ -1209,6 +1254,14 @@ function connectToRoom(hostRoomId) {
 
     peer.on('error', (err) => {
         console.error('PeerJS Guest Error:', err);
+    });
+}
+
+function broadcastToGuests(data) {
+    hostConnections.forEach(connection => {
+        if (connection && connection.open) {
+            connection.send(data);
+        }
     });
 }
 
