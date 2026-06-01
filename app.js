@@ -1239,6 +1239,10 @@ function initHostPeer() {
 
     peer.on('error', (err) => {
         console.error('PeerJS Host Error:', err);
+        if (err.type === 'unavailable-id') {
+            console.log('El ID ya está en uso, reintentando con otro...');
+            initHostPeer();
+        }
     });
 }
 
@@ -1281,15 +1285,21 @@ function updateActiveCardsUI() {
 }
 
 function connectToRoom(hostRoomId) {
-    const guestPeerId = 'guest-' + Math.floor(100000 + Math.random() * 900000);
-    peer = new Peer(guestPeerId, { debug: 1 });
+    const emptyDesc = document.querySelector("#cards-container .empty-state p");
+    if (emptyDesc) emptyDesc.textContent = "Conectando con el organizador...";
+    
+    // Crear el peer sin ID forzado para evitar colisiones y asegurar éxito instantáneo
+    peer = new Peer({ debug: 1 });
 
     peer.on('open', (id) => {
-        console.log('Conectando al host:', hostRoomId);
-        conn = peer.connect(hostRoomId);
+        console.log('Mi ID de invitado:', id);
+        if (emptyDesc) emptyDesc.textContent = "Conexión de red lista. Buscando al organizador...";
+        
+        conn = peer.connect(hostRoomId, { reliable: true });
         
         conn.on('open', () => {
             console.log('Conexión establecida con el organizador');
+            if (emptyDesc) emptyDesc.textContent = "¡Conectado! Esperando que el organizador comience la partida...";
         });
         
         conn.on('data', (data) => {
@@ -1298,24 +1308,35 @@ function connectToRoom(hostRoomId) {
                 gameSongs = data.songs;
                 playedSongs = data.playedSongs || [];
                 
-                // Forzar sincronización del tamaño de la cuadrícula si está presente en el selector
                 const sizeSelect = document.getElementById("card-grid-size");
                 if (sizeSelect && data.gridSize) {
                     sizeSelect.value = data.gridSize;
                 }
                 
-                // Generar automáticamente un cartón para el jugador de forma instantánea
                 generatePlayerCards();
             }
         });
         
+        conn.on('close', () => {
+            console.log('Conexión cerrada');
+            if (emptyDesc) emptyDesc.textContent = "Conexión perdida con el organizador. Intenta refrescar.";
+        });
+        
         conn.on('error', (err) => {
-            console.error('Conexión con el organizador falló:', err);
+            console.error('Error de conexión P2P:', err);
+            if (emptyDesc) emptyDesc.innerHTML = `<span style="color: var(--danger);">Error de conexión: ${err.message || err}</span>`;
         });
     });
 
     peer.on('error', (err) => {
         console.error('PeerJS Guest Error:', err);
+        if (emptyDesc) {
+            if (err.type === 'peer-unavailable') {
+                emptyDesc.innerHTML = `<span style="color: var(--danger);">La sala del organizador (${hostRoomId}) no existe o ha caducado. Asegúrate de que el ordenador tiene la partida abierta.</span>`;
+            } else {
+                emptyDesc.innerHTML = `<span style="color: var(--danger);">Error de red: ${err.type || err}</span>`;
+            }
+        }
     });
 }
 
