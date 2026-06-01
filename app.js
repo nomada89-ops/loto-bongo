@@ -1186,9 +1186,21 @@ function startVisualizerDrawing() {
 /* ==========================================================================
    PEERJS P2P & FLOATING EMOJIS LOGIC
    ========================================================================== */
+// Configuración común de PeerJS con servidores STUN públicos de Google para garantizar conexión móvil
+const peerConfig = {
+    config: {
+        iceServers: [
+            { urls: 'stun:stun.l.google.com:19302' },
+            { urls: 'stun:stun1.l.google.com:19302' },
+            { urls: 'stun:stun2.l.google.com:19302' }
+        ]
+    },
+    debug: 1
+};
+
 function initHostPeer() {
     roomId = 'lotobongo-' + Math.floor(1000 + Math.random() * 9000);
-    peer = new Peer(roomId, { debug: 1 });
+    peer = new Peer(roomId, peerConfig);
 
     peer.on('open', (id) => {
         console.log('Host PeerJS id:', id);
@@ -1288,14 +1300,13 @@ function connectToRoom(hostRoomId) {
     const emptyDesc = document.querySelector("#cards-container .empty-state p");
     if (emptyDesc) emptyDesc.textContent = "Conectando con el organizador...";
     
-    // Crear el peer sin ID forzado para evitar colisiones y asegurar éxito instantáneo
-    peer = new Peer({ debug: 1 });
+    peer = new Peer(peerConfig);
 
     peer.on('open', (id) => {
         console.log('Mi ID de invitado:', id);
         if (emptyDesc) emptyDesc.textContent = "Conexión de red lista. Buscando al organizador...";
         
-        conn = peer.connect(hostRoomId, { reliable: true });
+        conn = peer.connect(hostRoomId);
         
         conn.on('open', () => {
             console.log('Conexión establecida con el organizador');
