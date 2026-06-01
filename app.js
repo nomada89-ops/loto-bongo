@@ -1206,15 +1206,18 @@ function initHostPeer() {
         console.log('Invitado conectado:', connection.peer);
         hostConnections.push(connection);
         
-        // Si la partida ya ha empezado (tenemos canciones cargadas), enviar la lista de inmediato
-        if (gameSongs && gameSongs.length > 0) {
-            connection.send({
-                type: 'init-game',
-                songs: gameSongs,
-                playedSongs: playedSongs,
-                gridSize: document.getElementById("card-grid-size").value
-            });
-        }
+        connection.on('open', () => {
+            console.log('Conexión P2P abierta con:', connection.peer);
+            // Si la partida ya ha empezado (tenemos canciones cargadas), enviar la lista de inmediato
+            if (gameSongs && gameSongs.length > 0) {
+                connection.send({
+                    type: 'init-game',
+                    songs: gameSongs,
+                    playedSongs: playedSongs,
+                    gridSize: document.getElementById("card-grid-size").value
+                });
+            }
+        });
         
         connection.on('data', (data) => {
             if (data && data.type === 'emoji') {
