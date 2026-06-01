@@ -852,6 +852,7 @@ function resetGame() {
             </div>
         `;
         calculatePrizes();
+        updateActiveCardsUI();
     }
 }
 
@@ -955,8 +956,21 @@ function generatePlayerCards() {
             </div>
         `;
         printCardsGrid.appendChild(printCardEl);
+        
+        // Si somos invitados en el móvil, notificar al host de este nuevo cartón para registrarlo en la sesión
+        if (isGuestUser && conn && conn.open) {
+            conn.send({
+                type: 'register-card',
+                card: {
+                    id: cardId,
+                    songs: cardSongs,
+                    gridSize: gridSize
+                }
+            });
+        }
     }
     calculatePrizes();
+    updateActiveCardsUI();
 }
 
 function toggleCellMark(cell) {
@@ -1205,6 +1219,13 @@ function initHostPeer() {
         connection.on('data', (data) => {
             if (data && data.type === 'emoji') {
                 showFloatingEmojiOnScreen(data.emoji);
+            } else if (data && data.type === 'register-card') {
+                console.log('Registrando cartón recibido:', data.card);
+                if (!generatedCards.some(c => c.id === data.card.id)) {
+                    generatedCards.push(data.card);
+                    calculatePrizes();
+                    updateActiveCardsUI();
+                }
             }
         });
         
@@ -1215,6 +1236,44 @@ function initHostPeer() {
 
     peer.on('error', (err) => {
         console.error('PeerJS Host Error:', err);
+    });
+}
+
+function updateActiveCardsUI() {
+    const countEl = document.getElementById("active-cards-count");
+    const pillsEl = document.getElementById("active-cards-pills");
+    if (!pillsEl) return;
+    
+    if (countEl) countEl.textContent = generatedCards.length;
+    
+    if (generatedCards.length === 0) {
+        pillsEl.innerHTML = `<span style="color: var(--text-muted); font-size: 0.9rem;">Ningún cartón registrado todavía.</span>`;
+        return;
+    }
+    
+    pillsEl.innerHTML = "";
+    generatedCards.forEach(card => {
+        const pill = document.createElement("span");
+        pill.style.cssText = "background: rgba(157, 78, 221, 0.2); border: 1px solid rgba(157, 78, 221, 0.4); padding: 5px 12px; border-radius: 20px; font-size: 0.85rem; font-weight: 700; color: var(--accent-cyan); cursor: pointer; transition: all 0.2s ease;";
+        pill.textContent = card.id;
+        
+        pill.onmouseover = () => { 
+            pill.style.background = "rgba(0, 245, 212, 0.25)"; 
+            pill.style.borderColor = "var(--accent-cyan)"; 
+        };
+        pill.onmouseout = () => { 
+            pill.style.background = "rgba(157, 78, 221, 0.2)"; 
+            pill.style.borderColor = "rgba(157, 78, 221, 0.4)"; 
+        };
+        
+        pill.onclick = () => {
+            const inputVal = document.getElementById("input-validation-id");
+            if (inputVal) {
+                inputVal.value = card.id;
+                validateCardById();
+            }
+        };
+        pillsEl.appendChild(pill);
     });
 }
 
