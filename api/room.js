@@ -98,9 +98,15 @@ module.exports = async function handler(req, res) {
 
   const url = new URL(req.url, `https://${req.headers.host || "localhost"}`);
   const roomId = url.searchParams.get("room");
+  const diagnostic = url.searchParams.get("diagnostic") === "1";
 
   if (!roomId) {
     json(res, 400, { error: "Missing room" });
+    return;
+  }
+
+  if (diagnostic) {
+    json(res, 200, { durable: hasDurableStore() });
     return;
   }
 

@@ -1304,8 +1304,30 @@ async function fetchRoomApi(targetRoomId) {
     return response.json();
 }
 
+async function updateSyncStatusBadge(targetRoomId = roomId) {
+    if (!targetRoomId) return;
+    const badge = document.getElementById("sync-status-badge");
+    if (!badge) return;
+
+    try {
+        const response = await fetch(`${getRoomApiUrl(targetRoomId)}&diagnostic=1`, { cache: "no-store" });
+        const data = await response.json();
+        if (data.durable) {
+            badge.textContent = "Sync: durable";
+            badge.style.color = "var(--success)";
+        } else {
+            badge.textContent = "Sync: memoria";
+            badge.style.color = "var(--danger)";
+        }
+    } catch (error) {
+        badge.textContent = "Sync: sin conexion";
+        badge.style.color = "var(--danger)";
+    }
+}
+
 function startHostApiSync() {
     stopHostApiSync();
+    updateSyncStatusBadge();
     publishRoomStateToApi();
     syncHostCardsFromApi();
     hostApiSyncInterval = setInterval(publishRoomStateToApi, 1500);
