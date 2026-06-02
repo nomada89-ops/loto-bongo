@@ -353,6 +353,7 @@ let peer = null;
 let conn = null;
 let hostConnections = [];
 let roomId = null;
+let roomToken = null;
 let isGuestUser = false;
 let gameSessionId = null;
 let guestReadyInterval = null;
@@ -440,6 +441,7 @@ document.addEventListener("DOMContentLoaded", () => {
         isGuestUser = true;
         document.body.classList.add("guest-mode");
         const targetRoom = urlParams.get('room');
+        roomToken = urlParams.get('token') || "";
         
         // Ocultar botones de navegación del host
         const navOrg = document.getElementById("nav-btn-organizer");
@@ -1453,11 +1455,12 @@ const peerConfig = {
 
 function initHostPeer() {
     roomId = 'lotobongo-' + Math.floor(1000 + Math.random() * 9000);
+    roomToken = generateRoomToken();
     peer = new Peer(roomId, peerConfig);
 
     peer.on('open', (id) => {
         console.log('Host PeerJS id:', id);
-        const shareUrl = `${window.location.origin}${window.location.pathname}?room=${id}`;
+        const shareUrl = `${window.location.origin}${window.location.pathname}?room=${id}&token=${encodeURIComponent(roomToken)}`;
         const inputUrl = document.getElementById("share-room-url");
         if (inputUrl) inputUrl.value = shareUrl;
         
@@ -1505,8 +1508,21 @@ function initHostPeer() {
     });
 }
 
+function generateRoomToken() {
+    const bytes = new Uint8Array(16);
+    if (window.crypto && window.crypto.getRandomValues) {
+        window.crypto.getRandomValues(bytes);
+    } else {
+        for (let i = 0; i < bytes.length; i++) {
+            bytes[i] = Math.floor(Math.random() * 256);
+        }
+    }
+    return Array.from(bytes, byte => byte.toString(16).padStart(2, "0")).join("");
+}
+
 function getRoomApiUrl(targetRoomId = roomId) {
-    return `/api/room?room=${encodeURIComponent(targetRoomId)}`;
+    const tokenParam = roomToken ? `&token=${encodeURIComponent(roomToken)}` : "";
+    return `/api/room?room=${encodeURIComponent(targetRoomId)}${tokenParam}`;
 }
 
 async function postRoomApi(targetRoomId, payload) {
@@ -1646,6 +1662,10 @@ function broadcastGameStateWithRetry() {
 function handleHostConnectionData(connection, data) {
     console.log('Datos recibidos de', connection.peer, ':', data);
     if (!data) return;
+    if (data.token !== roomToken) {
+        console.warn('Mensaje P2P rechazado por token invalido:', connection.peer);
+        return;
+    }
 
     if (data.type === 'guest-ready') {
         if (!hostConnections.includes(connection) && connection.open) {
@@ -1715,6 +1735,10 @@ function updateActiveCardsUI() {
 function connectToRoom(hostRoomId) {
     roomId = hostRoomId;
     const emptyDesc = document.querySelector("#cards-container .empty-state p");
+    if (!roomToken) {
+        if (emptyDesc) emptyDesc.innerHTML = `<span style="color: var(--danger);">Enlace incompleto: falta el token de acceso de la sala.</span>`;
+        return;
+    }
     if (emptyDesc) emptyDesc.textContent = "Conectando con el organizador...";
     startGuestApiPolling(hostRoomId, emptyDesc);
     
@@ -1798,6 +1822,7 @@ function startGuestReadyLoop() {
         if (conn && conn.open) {
             conn.send({
                 type: 'guest-ready',
+                token: roomToken,
                 receivedGameSessionId: guestLastSessionId
             });
         }
@@ -1840,6 +1865,7 @@ function registerGuestCardWithRetry(card) {
         if (conn && conn.open && guestPendingCard) {
             conn.send({
                 type: 'register-card',
+                token: roomToken,
                 gameSessionId: gameSessionId,
                 card: guestPendingCard
             });

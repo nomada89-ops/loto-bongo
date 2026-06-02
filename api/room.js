@@ -21,6 +21,10 @@ function hasDurableStore() {
   return Boolean(UPSTASH_URL && UPSTASH_TOKEN);
 }
 
+function isAuthorized(room, token) {
+  return Boolean(room && room.token && token && room.token === token);
+}
+
 async function redisCommand(command) {
   const response = await fetch(UPSTASH_URL, {
     method: "POST",
@@ -98,6 +102,7 @@ module.exports = async function handler(req, res) {
 
   const url = new URL(req.url, `https://${req.headers.host || "localhost"}`);
   const roomId = url.searchParams.get("room");
+  const token = url.searchParams.get("token");
   const diagnostic = url.searchParams.get("diagnostic") === "1";
 
   if (!roomId) {
@@ -116,6 +121,10 @@ module.exports = async function handler(req, res) {
       json(res, 404, { error: "Room not found", durable: hasDurableStore() });
       return;
     }
+    if (!isAuthorized(room, token)) {
+      json(res, 403, { error: "Forbidden", durable: hasDurableStore() });
+      return;
+    }
     json(res, 200, { ...room, durable: hasDurableStore() });
     return;
   }
@@ -129,10 +138,20 @@ module.exports = async function handler(req, res) {
   try {
     const body = await readBody(req);
     const current = await loadRoom(roomId) || {
+      token: token || null,
       state: null,
       cards: [],
       updatedAt: Date.now()
     };
+
+    if (!current.token && token) {
+      current.token = token;
+    }
+
+    if (!isAuthorized(current, token)) {
+      json(res, 403, { error: "Forbidden", durable: hasDurableStore() });
+      return;
+    }
 
     if (body.action === "state") {
       current.state = body.state || null;
