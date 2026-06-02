@@ -861,12 +861,19 @@ function resetGame() {
    ========================================================================== */
 function generatePlayerCards() {
     if (gameSongs.length === 0) {
+        if (isGuestUser) {
+            console.warn("Intento de generar cartón sin canciones cargadas del host.");
+            return;
+        }
         alert("Primero debes iniciar la partida en la pestaña del Organizador.");
         switchTab('organizer');
         return;
     }
 
-    const qty = parseInt(document.getElementById("input-card-qty").value) || 1;
+    let qty = parseInt(document.getElementById("input-card-qty").value) || 1;
+    if (isGuestUser) {
+        qty = 1; // Un invitado en móvil solo necesita 1 cartón
+    }
     const sizeSelect = document.getElementById("card-grid-size").value;
     
     let gridSize = 16; // 4x4 por defecto
@@ -1215,13 +1222,19 @@ function initHostPeer() {
     });
 
     peer.on('connection', (connection) => {
-        console.log('Invitado conectado:', connection.peer);
-        hostConnections.push(connection);
+        console.log('Invitado intentando conectar:', connection.peer);
         
         connection.on('open', () => {
-            console.log('Conexión P2P abierta con:', connection.peer);
-            // Si la partida ya ha empezado (tenemos canciones cargadas), enviar la lista de inmediato
+            console.log('Conexión P2P abierta con éxito:', connection.peer);
+            
+            // Añadir a conexiones activas una vez que está abierta
+            if (!hostConnections.includes(connection)) {
+                hostConnections.push(connection);
+            }
+            
+            // Enviar canciones de inmediato si la partida ya ha comenzado
             if (gameSongs && gameSongs.length > 0) {
+                console.log('Enviando lista de canciones ya activa a:', connection.peer);
                 connection.send({
                     type: 'init-game',
                     songs: gameSongs,
@@ -1229,23 +1242,30 @@ function initHostPeer() {
                     gridSize: document.getElementById("card-grid-size").value
                 });
             }
-        });
-        
-        connection.on('data', (data) => {
-            if (data && data.type === 'emoji') {
-                showFloatingEmojiOnScreen(data.emoji);
-            } else if (data && data.type === 'register-card') {
-                console.log('Registrando cartón recibido:', data.card);
-                if (!generatedCards.some(c => c.id === data.card.id)) {
-                    generatedCards.push(data.card);
-                    calculatePrizes();
-                    updateActiveCardsUI();
+            
+            // Escuchar datos de esta conexión abierta
+            connection.on('data', (data) => {
+                console.log('Datos recibidos de', connection.peer, ':', data);
+                if (data && data.type === 'emoji') {
+                    showFloatingEmojiOnScreen(data.emoji);
+                } else if (data && data.type === 'register-card') {
+                    console.log('Registrando cartón recibido:', data.card);
+                    if (!generatedCards.some(c => c.id === data.card.id)) {
+                        generatedCards.push(data.card);
+                        calculatePrizes();
+                        updateActiveCardsUI();
+                    }
                 }
-            }
+            });
         });
         
         connection.on('close', () => {
+            console.log('Conexión cerrada por el invitado:', connection.peer);
             hostConnections = hostConnections.filter(c => c !== connection);
+        });
+        
+        connection.on('error', (err) => {
+            console.error('Error en la conexión del invitado:', connection.peer, err);
         });
     });
 
@@ -1311,31 +1331,33 @@ function connectToRoom(hostRoomId) {
         conn.on('open', () => {
             console.log('Conexión establecida con el organizador');
             if (emptyDesc) emptyDesc.textContent = "¡Conectado! Esperando que el organizador comience la partida...";
-        });
-        
-        conn.on('data', (data) => {
-            if (data && data.type === 'init-game') {
-                console.log('Recibida lista de canciones del organizador:', data.songs);
-                gameSongs = data.songs;
-                playedSongs = data.playedSongs || [];
-                
-                const sizeSelect = document.getElementById("card-grid-size");
-                if (sizeSelect && data.gridSize) {
-                    sizeSelect.value = data.gridSize;
+            
+            // Registrar los listeners del canal de comunicación una vez que esté abierta la conexión
+            conn.on('data', (data) => {
+                console.log('Recibido de host:', data);
+                if (data && data.type === 'init-game') {
+                    console.log('Recibida lista de canciones del organizador:', data.songs);
+                    gameSongs = data.songs;
+                    playedSongs = data.playedSongs || [];
+                    
+                    const sizeSelect = document.getElementById("card-grid-size");
+                    if (sizeSelect && data.gridSize) {
+                        sizeSelect.value = data.gridSize;
+                    }
+                    
+                    generatePlayerCards();
                 }
-                
-                generatePlayerCards();
-            }
-        });
-        
-        conn.on('close', () => {
-            console.log('Conexión cerrada');
-            if (emptyDesc) emptyDesc.textContent = "Conexión perdida con el organizador. Intenta refrescar.";
-        });
-        
-        conn.on('error', (err) => {
-            console.error('Error de conexión P2P:', err);
-            if (emptyDesc) emptyDesc.innerHTML = `<span style="color: var(--danger);">Error de conexión: ${err.message || err}</span>`;
+            });
+            
+            conn.on('close', () => {
+                console.log('Conexión cerrada');
+                if (emptyDesc) emptyDesc.textContent = "Conexión perdida con el organizador. Intenta refrescar.";
+            });
+            
+            conn.on('error', (err) => {
+                console.error('Error de conexión P2P:', err);
+                if (emptyDesc) emptyDesc.innerHTML = `<span style="color: var(--danger);">Error de conexión: ${err.message || err}</span>`;
+            });
         });
     });
 
