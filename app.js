@@ -126,6 +126,12 @@ let conn = null;
 let hostConnections = [];
 let roomId = null;
 let isGuestUser = false;
+let gameSessionId = null;
+let guestReadyInterval = null;
+let guestLastSessionId = null;
+let guestRegisteredCardIds = new Set();
+let guestPendingCard = null;
+let guestCardRegisterInterval = null;
 
 // Nodos de Audio Visualizer
 let audioAnalyser = null;
@@ -493,13 +499,10 @@ function startGame() {
         </div>
     `;
 
-    // Broadcast a los invitados conectados para sincronizar la partida
-    broadcastToGuests({
-        type: 'init-game',
-        songs: gameSongs,
-        playedSongs: [],
-        gridSize: document.getElementById("card-grid-size").value
-    });
+    gameSessionId = `game-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
+
+    // Broadcast con reintentos para sincronizar invitados ya conectados o recien abiertos.
+    broadcastGameStateWithRetry();
 
     playSound('draw');
 }
@@ -965,14 +968,11 @@ function generatePlayerCards() {
         printCardsGrid.appendChild(printCardEl);
         
         // Si somos invitados en el móvil, notificar al host de este nuevo cartón para registrarlo en la sesión
-        if (isGuestUser && conn && conn.open) {
-            conn.send({
-                type: 'register-card',
-                card: {
-                    id: cardId,
-                    songs: cardSongs,
-                    gridSize: gridSize
-                }
+        if (isGuestUser && !guestRegisteredCardIds.has(cardId)) {
+            registerGuestCardWithRetry({
+                id: cardId,
+                songs: cardSongs,
+                gridSize: gridSize
             });
         }
     }
@@ -1234,49 +1234,28 @@ function initHostPeer() {
 
     peer.on('connection', (connection) => {
         console.log('Invitado intentando conectar:', connection.peer);
-        
-        connection.on('open', () => {
-            console.log('Conexión P2P abierta con éxito:', connection.peer);
-            
-            // Añadir a conexiones activas una vez que está abierta
-            if (!hostConnections.includes(connection)) {
-                hostConnections.push(connection);
-            }
-            
-            // Enviar canciones de inmediato si la partida ya ha comenzado
-            if (gameSongs && gameSongs.length > 0) {
-                console.log('Enviando lista de canciones ya activa a:', connection.peer);
-                connection.send({
-                    type: 'init-game',
-                    songs: gameSongs,
-                    playedSongs: playedSongs,
-                    gridSize: document.getElementById("card-grid-size").value
-                });
-            }
-            
-            // Escuchar datos de esta conexión abierta
-            connection.on('data', (data) => {
-                console.log('Datos recibidos de', connection.peer, ':', data);
-                if (data && data.type === 'emoji') {
-                    showFloatingEmojiOnScreen(data.emoji);
-                } else if (data && data.type === 'register-card') {
-                    console.log('Registrando cartón recibido:', data.card);
-                    if (!generatedCards.some(c => c.id === data.card.id)) {
-                        generatedCards.push(data.card);
-                        calculatePrizes();
-                        updateActiveCardsUI();
-                    }
-                }
-            });
+
+        connection.on('data', (data) => {
+            handleHostConnectionData(connection, data);
         });
-        
+
         connection.on('close', () => {
-            console.log('Conexión cerrada por el invitado:', connection.peer);
+            console.log('Conexion cerrada por el invitado:', connection.peer);
             hostConnections = hostConnections.filter(c => c !== connection);
         });
         
         connection.on('error', (err) => {
-            console.error('Error en la conexión del invitado:', connection.peer, err);
+            console.error('Error en la conexion del invitado:', connection.peer, err);
+        });
+
+        connection.on('open', () => {
+            console.log('Conexion P2P abierta con exito:', connection.peer);
+            
+            if (!hostConnections.includes(connection)) {
+                hostConnections.push(connection);
+            }
+
+            sendGameStateToGuest(connection);
         });
     });
 
@@ -1287,6 +1266,69 @@ function initHostPeer() {
             initHostPeer();
         }
     });
+}
+
+function getCurrentGameState() {
+    return {
+        type: 'game-state',
+        gameSessionId: gameSessionId,
+        hasStarted: gameSongs.length > 0,
+        songs: gameSongs,
+        playedSongs: playedSongs,
+        gridSize: document.getElementById("card-grid-size").value
+    };
+}
+
+function sendGameStateToGuest(connection) {
+    if (!connection || !connection.open) return;
+    connection.send(getCurrentGameState());
+}
+
+function broadcastGameStateWithRetry() {
+    let attempts = 0;
+    const maxAttempts = 5;
+    const sendBurst = () => {
+        broadcastToGuests(getCurrentGameState());
+        attempts += 1;
+        if (attempts < maxAttempts) {
+            setTimeout(sendBurst, 1000);
+        }
+    };
+    sendBurst();
+}
+
+function handleHostConnectionData(connection, data) {
+    console.log('Datos recibidos de', connection.peer, ':', data);
+    if (!data) return;
+
+    if (data.type === 'guest-ready') {
+        if (!hostConnections.includes(connection) && connection.open) {
+            hostConnections.push(connection);
+        }
+        sendGameStateToGuest(connection);
+        return;
+    }
+
+    if (data.type === 'emoji') {
+        showFloatingEmojiOnScreen(data.emoji);
+        return;
+    }
+
+    if (data.type === 'register-card' && data.card) {
+        console.log('Registrando carton recibido:', data.card);
+        if (!generatedCards.some(c => c.id === data.card.id)) {
+            generatedCards.push(data.card);
+            calculatePrizes();
+            updateActiveCardsUI();
+        }
+        if (connection.open) {
+            connection.send({
+                type: 'card-registered',
+                cardId: data.card.id,
+                gameSessionId: data.gameSessionId || gameSessionId
+            });
+        }
+    }
 }
 
 function updateActiveCardsUI() {
@@ -1331,44 +1373,36 @@ function connectToRoom(hostRoomId) {
     const emptyDesc = document.querySelector("#cards-container .empty-state p");
     if (emptyDesc) emptyDesc.textContent = "Conectando con el organizador...";
     
-    peer = new Peer(peerConfig);
+    peer = new Peer(undefined, peerConfig);
 
     peer.on('open', (id) => {
         console.log('Mi ID de invitado:', id);
-        if (emptyDesc) emptyDesc.textContent = "Conexión de red lista. Buscando al organizador...";
+        if (emptyDesc) emptyDesc.textContent = "Conexion de red lista. Buscando al organizador...";
         
         conn = peer.connect(hostRoomId);
+
+        conn.on('data', (data) => {
+            handleGuestConnectionData(data, emptyDesc);
+        });
+
+        conn.on('close', () => {
+            console.log('Conexion cerrada');
+            stopGuestReadyLoop();
+            stopGuestCardRegisterLoop();
+            if (emptyDesc) emptyDesc.textContent = "Conexion perdida con el organizador. Intenta refrescar.";
+        });
+        
+        conn.on('error', (err) => {
+            console.error('Error de conexion P2P:', err);
+            stopGuestReadyLoop();
+            stopGuestCardRegisterLoop();
+            if (emptyDesc) emptyDesc.innerHTML = `<span style="color: var(--danger);">Error de conexion: ${err.message || err}</span>`;
+        });
         
         conn.on('open', () => {
-            console.log('Conexión establecida con el organizador');
-            if (emptyDesc) emptyDesc.textContent = "¡Conectado! Esperando que el organizador comience la partida...";
-            
-            // Registrar los listeners del canal de comunicación una vez que esté abierta la conexión
-            conn.on('data', (data) => {
-                console.log('Recibido de host:', data);
-                if (data && data.type === 'init-game') {
-                    console.log('Recibida lista de canciones del organizador:', data.songs);
-                    gameSongs = data.songs;
-                    playedSongs = data.playedSongs || [];
-                    
-                    const sizeSelect = document.getElementById("card-grid-size");
-                    if (sizeSelect && data.gridSize) {
-                        sizeSelect.value = data.gridSize;
-                    }
-                    
-                    generatePlayerCards();
-                }
-            });
-            
-            conn.on('close', () => {
-                console.log('Conexión cerrada');
-                if (emptyDesc) emptyDesc.textContent = "Conexión perdida con el organizador. Intenta refrescar.";
-            });
-            
-            conn.on('error', (err) => {
-                console.error('Error de conexión P2P:', err);
-                if (emptyDesc) emptyDesc.innerHTML = `<span style="color: var(--danger);">Error de conexión: ${err.message || err}</span>`;
-            });
+            console.log('Conexion establecida con el organizador');
+            if (emptyDesc) emptyDesc.textContent = "Conectado. Esperando que el organizador comience la partida...";
+            startGuestReadyLoop();
         });
     });
 
@@ -1382,6 +1416,100 @@ function connectToRoom(hostRoomId) {
             }
         }
     });
+}
+
+function startGuestReadyLoop() {
+    stopGuestReadyLoop();
+    const sendReady = () => {
+        if (conn && conn.open) {
+            conn.send({
+                type: 'guest-ready',
+                receivedGameSessionId: guestLastSessionId
+            });
+        }
+    };
+    sendReady();
+    guestReadyInterval = setInterval(sendReady, 1000);
+}
+
+function stopGuestReadyLoop() {
+    if (guestReadyInterval) {
+        clearInterval(guestReadyInterval);
+        guestReadyInterval = null;
+    }
+}
+
+function handleGuestConnectionData(data, emptyDesc) {
+    console.log('Recibido de host:', data);
+    if (!data) return;
+
+    if (data.type === 'game-state' || data.type === 'init-game') {
+        handleGuestGameState(data, emptyDesc);
+        return;
+    }
+
+    if (data.type === 'card-registered') {
+        console.log('Carton registrado por el organizador:', data.cardId);
+        if (guestPendingCard && guestPendingCard.id === data.cardId) {
+            guestRegisteredCardIds.add(data.cardId);
+            stopGuestCardRegisterLoop();
+        }
+    }
+}
+
+function registerGuestCardWithRetry(card) {
+    guestPendingCard = card;
+    guestRegisteredCardIds.add(card.id);
+
+    const sendRegistration = () => {
+        if (conn && conn.open && guestPendingCard) {
+            conn.send({
+                type: 'register-card',
+                gameSessionId: gameSessionId,
+                card: guestPendingCard
+            });
+        }
+    };
+
+    stopGuestCardRegisterLoop();
+    sendRegistration();
+    guestCardRegisterInterval = setInterval(sendRegistration, 1000);
+}
+
+function stopGuestCardRegisterLoop() {
+    if (guestCardRegisterInterval) {
+        clearInterval(guestCardRegisterInterval);
+        guestCardRegisterInterval = null;
+    }
+    guestPendingCard = null;
+}
+
+function handleGuestGameState(data, emptyDesc) {
+    const songs = data.songs || [];
+    const sessionId = data.gameSessionId || `legacy-${songs.length}`;
+
+    if (!data.hasStarted || songs.length === 0) {
+        if (emptyDesc) emptyDesc.textContent = "Conectado. Esperando que el organizador comience la partida...";
+        return;
+    }
+
+    gameSongs = songs;
+    playedSongs = data.playedSongs || [];
+    gameSessionId = sessionId;
+    
+    const sizeSelect = document.getElementById("card-grid-size");
+    if (sizeSelect && data.gridSize) {
+        sizeSelect.value = data.gridSize;
+    }
+
+    if (guestLastSessionId !== sessionId) {
+        guestLastSessionId = sessionId;
+        guestRegisteredCardIds = new Set();
+        stopGuestCardRegisterLoop();
+        stopGuestReadyLoop();
+        if (emptyDesc) emptyDesc.textContent = "Partida recibida. Generando tu carton...";
+        generatePlayerCards();
+    }
 }
 
 function broadcastToGuests(data) {
@@ -1531,4 +1659,3 @@ function calculatePrizes() {
     document.getElementById("display-line-prize").textContent = linePrize.toFixed(2) + " €";
     document.getElementById("display-bingo-prize").textContent = bingoPrize.toFixed(2) + " €";
 }
-
