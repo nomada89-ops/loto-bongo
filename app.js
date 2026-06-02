@@ -32,7 +32,17 @@ const PRESET_PLAYLISTS = {
         { title: "Mil Calles llevan hacia ti", artist: "La Guardia", ytId: "F4iPuhLpM5Q" },
         { title: "Cuando brille el Sol", artist: "La Guardia", ytId: "aC_C56sLw9Y" },
         { title: "La Flaca (Directo)", artist: "Jarabe de Palo", ytId: "5FfB35fQW6s" },
-        { title: "El Ritmo del Garaje", artist: "Loquillo y Trogloditas", ytId: "yU1m219T2Cg" }
+        { title: "El Ritmo del Garaje", artist: "Loquillo y Trogloditas", ytId: "yU1m219T2Cg" },
+        { title: "La Chica de Ayer", artist: "Nacha Pop", ytId: "" },
+        { title: "Venezia", artist: "Hombres G", ytId: "" },
+        { title: "Una Foto en Blanco y Negro", artist: "El Canto del Loco", ytId: "" },
+        { title: "Rosas", artist: "La Oreja de Van Gogh", ytId: "" },
+        { title: "Tenia Tanto Que Darte", artist: "Nena Daconte", ytId: "" },
+        { title: "Sirenas", artist: "Taburete", ytId: "" },
+        { title: "La Revolucion Sexual", artist: "La Casa Azul", ytId: "" },
+        { title: "Papeles Mojados", artist: "Chambao", ytId: "" },
+        { title: "Ojala", artist: "Beret", ytId: "" },
+        { title: "La Rumba del Piano", artist: "Estopa", ytId: "" }
     ],
     "hits-internacionales": [
         { title: "Dancing Queen", artist: "ABBA", ytId: "xO10Rob9k5A" },
@@ -64,7 +74,17 @@ const PRESET_PLAYLISTS = {
         { title: "Stay", artist: "The Kid LAROI & Justin Bieber", ytId: "kTJczUoc26U" },
         { title: "Shivers", artist: "Ed Sheeran", ytId: "Il0S8BoucSA" },
         { title: "Dynamite", artist: "BTS", ytId: "gdZLi9oWNZg" },
-        { title: "Girls Just Want To Have Fun", artist: "Cyndi Lauper", ytId: "PIb6AZdTr-A" }
+        { title: "Girls Just Want To Have Fun", artist: "Cyndi Lauper", ytId: "PIb6AZdTr-A" },
+        { title: "Shape of You", artist: "Ed Sheeran", ytId: "" },
+        { title: "Happy", artist: "Pharrell Williams", ytId: "" },
+        { title: "Can't Stop the Feeling!", artist: "Justin Timberlake", ytId: "" },
+        { title: "Hey Ya!", artist: "Outkast", ytId: "" },
+        { title: "Seven Nation Army", artist: "The White Stripes", ytId: "" },
+        { title: "Viva la Vida", artist: "Coldplay", ytId: "" },
+        { title: "Somebody That I Used To Know", artist: "Gotye", ytId: "" },
+        { title: "All Star", artist: "Smash Mouth", ytId: "" },
+        { title: "I Gotta Feeling", artist: "The Black Eyed Peas", ytId: "" },
+        { title: "Hips Don't Lie", artist: "Shakira", ytId: "" }
     ],
     "reggaeton-viejo": [
         { title: "Gasolina", artist: "Daddy Yankee", ytId: "qGKrc3ZhEE4" },
@@ -96,7 +116,17 @@ const PRESET_PLAYLISTS = {
         { title: "Sexy Movimiento", artist: "Wisin & Yandel", ytId: "FvjCg7yUvX0" },
         { title: "Baila Morena", artist: "Héctor & Tito", ytId: "yv_9nLdG390" },
         { title: "Pobre Diabla", artist: "Don Omar", ytId: "84V73ZkS9r8" },
-        { title: "Salió El Sol", artist: "Don Omar", ytId: "K1y5qT1Z55k" }
+        { title: "Salió El Sol", artist: "Don Omar", ytId: "K1y5qT1Z55k" },
+        { title: "El Perdón", artist: "Nicky Jam & Enrique Iglesias", ytId: "" },
+        { title: "Travesuras", artist: "Nicky Jam", ytId: "" },
+        { title: "6 AM", artist: "J Balvin & Farruko", ytId: "" },
+        { title: "Ay Vamos", artist: "J Balvin", ytId: "" },
+        { title: "Dutty Love", artist: "Don Omar & Natti Natasha", ytId: "" },
+        { title: "Hasta Abajo", artist: "Don Omar", ytId: "" },
+        { title: "Noche y De Día", artist: "Enrique Iglesias, Yandel & Juan Magan", ytId: "" },
+        { title: "La Mordidita", artist: "Ricky Martin & Yotuel", ytId: "" },
+        { title: "Borro Cassette", artist: "Maluma", ytId: "" },
+        { title: "Taboo", artist: "Don Omar", ytId: "" }
     ],
     "pop-fiesta": [
         { title: "Comiéndote a Besos", artist: "Rozalén", ytId: "" },
@@ -118,7 +148,17 @@ const PRESET_PLAYLISTS = {
         { title: "Tacones Rojos", artist: "Sebastián Yatra", ytId: "" },
         { title: "Mon Amour (Remix)", artist: "zzoilo & Aitana", ytId: "" },
         { title: "La Bicicleta", artist: "Carlos Vives & Shakira", ytId: "" },
-        { title: "Rayos de Sol", artist: "Jose de Rico & Henry Mendez", ytId: "" }
+        { title: "Rayos de Sol", artist: "Jose de Rico & Henry Mendez", ytId: "" },
+        { title: "Sofía", artist: "Álvaro Soler", ytId: "" },
+        { title: "El Mismo Sol", artist: "Álvaro Soler", ytId: "" },
+        { title: "Yo Contigo, Tú Conmigo", artist: "Morat & Álvaro Soler", ytId: "" },
+        { title: "Cómo Te Atreves", artist: "Morat", ytId: "" },
+        { title: "No Pide Tanto, Idiota", artist: "Maldita Nerea", ytId: "" },
+        { title: "El Secreto de las Tortugas", artist: "Maldita Nerea", ytId: "" },
+        { title: "La Playa", artist: "La Oreja de Van Gogh", ytId: "" },
+        { title: "Cuéntame al Oído", artist: "La Oreja de Van Gogh", ytId: "" },
+        { title: "Marta, Sebas, Guille y los Demás", artist: "Amaral", ytId: "" },
+        { title: "El 28", artist: "La Oreja de Van Gogh", ytId: "" }
     ],
     "verbenas-bodas": [
         { title: "Fiesta", artist: "Raffaella Carrà", ytId: "" },
@@ -140,7 +180,17 @@ const PRESET_PLAYLISTS = {
         { title: "Sarandonga", artist: "Lolita", ytId: "" },
         { title: "Procuro Olvidarte", artist: "Los Panchos", ytId: "" },
         { title: "Y.M.C.A.", artist: "Village People", ytId: "" },
-        { title: "I Will Survive", artist: "Gloria Gaynor", ytId: "" }
+        { title: "I Will Survive", artist: "Gloria Gaynor", ytId: "" },
+        { title: "Resistiré", artist: "Dúo Dinámico", ytId: "" },
+        { title: "Libre", artist: "Nino Bravo", ytId: "" },
+        { title: "Un Beso y una Flor", artist: "Nino Bravo", ytId: "" },
+        { title: "Mi Gran Noche", artist: "Raphael", ytId: "" },
+        { title: "Amante Bandido", artist: "Miguel Bosé", ytId: "" },
+        { title: "Bailar Pegados", artist: "Sergio Dalma", ytId: "" },
+        { title: "Corazón Contento", artist: "Marisol", ytId: "" },
+        { title: "La Yenka", artist: "Johnny & Charley", ytId: "" },
+        { title: "La Bamba", artist: "Los Lobos", ytId: "" },
+        { title: "El Tractor Amarillo", artist: "Zapato Veloz", ytId: "" }
     ],
     "reggaeton-actual": [
         { title: "Tití Me Preguntó", artist: "Bad Bunny", ytId: "" },
@@ -162,7 +212,17 @@ const PRESET_PLAYLISTS = {
         { title: "Ojitos Lindos", artist: "Bad Bunny & Bomba Estéreo", ytId: "" },
         { title: "El Merengue", artist: "Marshmello & Manuel Turizo", ytId: "" },
         { title: "Mi Ex Tenía Razón", artist: "Karol G", ytId: "" },
-        { title: "Acróstico", artist: "Shakira", ytId: "" }
+        { title: "Acróstico", artist: "Shakira", ytId: "" },
+        { title: "Moscow Mule", artist: "Bad Bunny", ytId: "" },
+        { title: "Where She Goes", artist: "Bad Bunny", ytId: "" },
+        { title: "Yandel 150", artist: "Yandel & Feid", ytId: "" },
+        { title: "Ferxxo 100", artist: "Feid", ytId: "" },
+        { title: "XQ Te Pones Así", artist: "Feid & Yandel", ytId: "" },
+        { title: "Punto G", artist: "Quevedo", ytId: "" },
+        { title: "Feliz Cumpleaños Ferxxo", artist: "Feid", ytId: "" },
+        { title: "Si Antes Te Hubiera Conocido", artist: "Karol G", ytId: "" },
+        { title: "Ohnana", artist: "Kapo", ytId: "" },
+        { title: "Santa", artist: "Rvssian, Rauw Alejandro & Ayra Starr", ytId: "" }
     ],
     "eurodance-90s": [
         { title: "Freed From Desire", artist: "Gala", ytId: "" },
@@ -184,7 +244,17 @@ const PRESET_PLAYLISTS = {
         { title: "Historias de Amor", artist: "OBK", ytId: "" },
         { title: "Flying Free", artist: "Pont Aeri", ytId: "" },
         { title: "This Is Your Night", artist: "Amber", ytId: "" },
-        { title: "Another Night", artist: "Real McCoy", ytId: "" }
+        { title: "Another Night", artist: "Real McCoy", ytId: "" },
+        { title: "Show Me Love", artist: "Robin S", ytId: "" },
+        { title: "Sing Hallelujah!", artist: "Dr. Alban", ytId: "" },
+        { title: "It's My Life", artist: "Dr. Alban", ytId: "" },
+        { title: "The Power", artist: "Snap!", ytId: "" },
+        { title: "U Can't Touch This", artist: "MC Hammer", ytId: "" },
+        { title: "Children", artist: "Robert Miles", ytId: "" },
+        { title: "Sandstorm", artist: "Darude", ytId: "" },
+        { title: "Insomnia", artist: "Faithless", ytId: "" },
+        { title: "Encore Une Fois", artist: "Sash!", ytId: "" },
+        { title: "Ecuador", artist: "Sash!", ytId: "" }
     ],
     "rock-espanol": [
         { title: "So Payaso", artist: "Extremoduro", ytId: "" },
@@ -206,7 +276,17 @@ const PRESET_PLAYLISTS = {
         { title: "El Límite", artist: "La Frontera", ytId: "" },
         { title: "El Roce de Tu Piel", artist: "Platero y Tú", ytId: "" },
         { title: "Como Pollo Sin Cabeza", artist: "Marea", ytId: "" },
-        { title: "Por Verte Sonreír", artist: "La Fuga", ytId: "" }
+        { title: "Por Verte Sonreír", artist: "La Fuga", ytId: "" },
+        { title: "A Fuego", artist: "Extremoduro", ytId: "" },
+        { title: "No Hay Tregua", artist: "Barricada", ytId: "" },
+        { title: "Dolores Se Llamaba Lola", artist: "Los Suaves", ytId: "" },
+        { title: "Maldito Duende", artist: "Héroes del Silencio", ytId: "" },
+        { title: "Entre Dos Tierras", artist: "Héroes del Silencio", ytId: "" },
+        { title: "La Chispa Adecuada", artist: "Héroes del Silencio", ytId: "" },
+        { title: "Escuela de Calor", artist: "Radio Futura", ytId: "" },
+        { title: "Enamorado de la Moda Juvenil", artist: "Radio Futura", ytId: "" },
+        { title: "Santa Lucía", artist: "Miguel Ríos", ytId: "" },
+        { title: "El Rompeolas", artist: "Loquillo", ytId: "" }
     ],
     "indie-espanol": [
         { title: "Copenhague", artist: "Vetusta Morla", ytId: "" },
@@ -228,7 +308,17 @@ const PRESET_PLAYLISTS = {
         { title: "Turno de Noche", artist: "Carlos Sadness", ytId: "" },
         { title: "Te Debo un Baile", artist: "Nueva Vulcano", ytId: "" },
         { title: "Bien Por Ti", artist: "Viva Suecia", ytId: "" },
-        { title: "Lo Que Te Mereces", artist: "Viva Suecia", ytId: "" }
+        { title: "Lo Que Te Mereces", artist: "Viva Suecia", ytId: "" },
+        { title: "La Deriva", artist: "Vetusta Morla", ytId: "" },
+        { title: "23 de Junio", artist: "Vetusta Morla", ytId: "" },
+        { title: "Incendios de Nieve", artist: "Love of Lesbian", ytId: "" },
+        { title: "Oniria e Insomnia", artist: "Love of Lesbian", ytId: "" },
+        { title: "Pequeña Gran Revolución", artist: "Izal", ytId: "" },
+        { title: "Copacabana", artist: "Izal", ytId: "" },
+        { title: "Ayer", artist: "La Bien Querida", ytId: "" },
+        { title: "Toro", artist: "El Columpio Asesino", ytId: "" },
+        { title: "La Costa Azul", artist: "Sidonie", ytId: "" },
+        { title: "La Gravedad", artist: "Viva Suecia", ytId: "" }
     ],
     "disney-familiar": [
         { title: "Libre Soy", artist: "Gisela", ytId: "" },
@@ -250,7 +340,17 @@ const PRESET_PLAYLISTS = {
         { title: "Bella y Bestia Son", artist: "La Bella y la Bestia", ytId: "" },
         { title: "Breaking Free", artist: "High School Musical", ytId: "" },
         { title: "We're All in This Together", artist: "High School Musical", ytId: "" },
-        { title: "Baby Shark", artist: "Pinkfong", ytId: "" }
+        { title: "Baby Shark", artist: "Pinkfong", ytId: "" },
+        { title: "Into the Unknown", artist: "Idina Menzel", ytId: "" },
+        { title: "Let It Go", artist: "Idina Menzel", ytId: "" },
+        { title: "A Whole New World", artist: "Peabo Bryson & Regina Belle", ytId: "" },
+        { title: "Circle of Life", artist: "Elton John", ytId: "" },
+        { title: "Can You Feel the Love Tonight", artist: "Elton John", ytId: "" },
+        { title: "You've Got a Friend in Me", artist: "Randy Newman", ytId: "" },
+        { title: "Try Everything", artist: "Shakira", ytId: "" },
+        { title: "Surface Pressure", artist: "Jessica Darrow", ytId: "" },
+        { title: "Under the Sea", artist: "Samuel E. Wright", ytId: "" },
+        { title: "How Far I'll Go", artist: "Auli'i Cravalho", ytId: "" }
     ],
     "karaoke-meme": [
         { title: "Aserejé", artist: "Las Ketchup", ytId: "" },
@@ -272,7 +372,17 @@ const PRESET_PLAYLISTS = {
         { title: "I'm Too Sexy", artist: "Right Said Fred", ytId: "" },
         { title: "Never Gonna Give You Up", artist: "Rick Astley", ytId: "" },
         { title: "Mi Carro", artist: "Manolo Escobar", ytId: "" },
-        { title: "Borriquito", artist: "Peret", ytId: "" }
+        { title: "Borriquito", artist: "Peret", ytId: "" },
+        { title: "La Bomba", artist: "King África", ytId: "" },
+        { title: "El Gato Volador", artist: "El Chombo", ytId: "" },
+        { title: "Chihuahua", artist: "DJ Bobo", ytId: "" },
+        { title: "The Final Countdown", artist: "Europe", ytId: "" },
+        { title: "It's Raining Men", artist: "The Weather Girls", ytId: "" },
+        { title: "Livin' La Vida Loca", artist: "Ricky Martin", ytId: "" },
+        { title: "La Copa de la Vida", artist: "Ricky Martin", ytId: "" },
+        { title: "Boom Boom Boom Boom!!", artist: "Vengaboys", ytId: "" },
+        { title: "We Like To Party!", artist: "Vengaboys", ytId: "" },
+        { title: "Blue Monday", artist: "New Order", ytId: "" }
     ],
     "eurovision-ganadoras": [
         { title: "Waterloo", artist: "ABBA", ytId: "" },
@@ -298,7 +408,16 @@ const PRESET_PLAYLISTS = {
         { title: "Zitti e Buoni", artist: "Måneskin", ytId: "" },
         { title: "Stefania", artist: "Kalush Orchestra", ytId: "" },
         { title: "Tattoo", artist: "Loreen", ytId: "" },
-        { title: "The Code", artist: "Nemo", ytId: "" }
+        { title: "The Code", artist: "Nemo", ytId: "" },
+        { title: "Puppet on a String", artist: "Sandie Shaw", ytId: "" },
+        { title: "La La La", artist: "Massiel", ytId: "" },
+        { title: "Vivo Cantando", artist: "Salomé", ytId: "" },
+        { title: "Save Your Kisses for Me", artist: "Brotherhood of Man", ytId: "" },
+        { title: "Making Your Mind Up", artist: "Bucks Fizz", ytId: "" },
+        { title: "Ein Bisschen Frieden", artist: "Nicole", ytId: "" },
+        { title: "Diggi-Loo Diggi-Ley", artist: "Herreys", ytId: "" },
+        { title: "Nocturne", artist: "Secret Garden", ytId: "" },
+        { title: "Love Shine a Light", artist: "Katrina and the Waves", ytId: "" }
     ],
     "benidorm-fest": [
         { title: "SloMo", artist: "Chanel", ytId: "" },
@@ -324,7 +443,16 @@ const PRESET_PLAYLISTS = {
         { title: "Dos Extraños", artist: "St. Pedro", ytId: "" },
         { title: "Caliente", artist: "Jorge González", ytId: "" },
         { title: "Prisionero", artist: "Lérica", ytId: "" },
-        { title: "Me Vas a Ver", artist: "Mantra", ytId: "" }
+        { title: "Me Vas a Ver", artist: "Mantra", ytId: "" },
+        { title: "Brillos Platino", artist: "Almácor", ytId: "" },
+        { title: "El Temps", artist: "Roger Padrós", ytId: "" },
+        { title: "Beso en la Mañana", artist: "Dellacruz", ytId: "" },
+        { title: "Amor de Verano", artist: "Marlena", ytId: "" },
+        { title: "Boys on the Dance Floor", artist: "Twin Melody", ytId: "" },
+        { title: "La Red", artist: "Megara", ytId: "" },
+        { title: "Me He Colgado de Mi Ex", artist: "Angy Fernández", ytId: "" },
+        { title: "Uh Nana", artist: "Lérica", ytId: "" },
+        { title: "La La Love You", artist: "La La Love You", ytId: "" }
     ]
 };
 
@@ -991,22 +1119,35 @@ function cleanSearchTerm(term) {
     return term
         .replace(/\(remix\)/gi, '')
         .replace(/\(directo\)/gi, '')
+        .replace(/\(feat[^)]*\)/gi, '')
+        .replace(/\(ft[^)]*\)/gi, '')
         .replace(/\b(ft|ft\.|feat|feat\.)\b.*$/gi, '')
         .replace(/&/g, ' ')
+        .replace(/:/g, ' ')
         .replace(/\s+/g, ' ')
         .trim();
 }
 
-function fetchItunesPreview(artist, title) {
+function uniqSearchQueries(queries) {
+    const seen = new Set();
+    return queries
+        .map(query => query.replace(/\s+/g, " ").trim())
+        .filter(query => {
+            const key = query.toLowerCase();
+            if (!query || seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
+}
+
+function fetchItunesJsonp(query) {
     return new Promise((resolve) => {
         const callbackName = 'itunesCallback_' + Math.round(100000 * Math.random());
-        const cleanArtist = cleanSearchTerm(artist);
-        const cleanTitle = cleanSearchTerm(title);
-        const query = encodeURIComponent(`${cleanArtist} ${cleanTitle}`);
-        const url = `https://itunes.apple.com/search?term=${query}&limit=1&entity=song&callback=${callbackName}`;
+        const encodedQuery = encodeURIComponent(query);
+        const url = `https://itunes.apple.com/search?term=${encodedQuery}&country=ES&limit=5&entity=song&callback=${callbackName}`;
         
         const timeoutId = setTimeout(() => {
-            console.warn("iTunes API search timeout for:", title);
+            console.warn("iTunes API search timeout for:", query);
             delete window[callbackName];
             const scriptEl = document.getElementById(callbackName);
             if (scriptEl && scriptEl.parentNode) {
@@ -1024,8 +1165,9 @@ function fetchItunesPreview(artist, title) {
                 scriptEl.parentNode.removeChild(scriptEl);
             }
             
-            if (data.resultCount > 0 && data.results[0].previewUrl) {
-                resolve(data.results[0].previewUrl);
+            const result = (data.results || []).find(item => item.previewUrl);
+            if (result) {
+                resolve(result.previewUrl);
             } else {
                 resolve(null);
             }
@@ -1045,6 +1187,29 @@ function fetchItunesPreview(artist, title) {
         
         document.body.appendChild(script);
     });
+}
+
+async function fetchItunesPreview(artist, title) {
+    const cleanArtist = cleanSearchTerm(artist);
+    const cleanTitle = cleanSearchTerm(title);
+    const looseTitle = cleanSearchTerm(String(title || "").replace(/\(.*?\)/g, ""));
+    const firstArtist = cleanSearchTerm(String(artist || "").split(/,|&| y | and /i)[0]);
+    const queries = uniqSearchQueries([
+        `${cleanArtist} ${cleanTitle}`,
+        `${firstArtist} ${cleanTitle}`,
+        `${cleanTitle} ${cleanArtist}`,
+        cleanTitle,
+        looseTitle
+    ]);
+
+    for (const query of queries) {
+        const previewUrl = await fetchItunesJsonp(query);
+        if (previewUrl) {
+            return previewUrl;
+        }
+    }
+
+    return null;
 }
 
 async function playSongAudio(song) {
