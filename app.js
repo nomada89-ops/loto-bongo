@@ -1421,10 +1421,12 @@ function handleHostConnectionData(connection, data) {
 
 function updateActiveCardsUI() {
     const countEl = document.getElementById("active-cards-count");
+    const statsCardsEl = document.getElementById("stats-cards");
     const pillsEl = document.getElementById("active-cards-pills");
-    if (!pillsEl) return;
     
     if (countEl) countEl.textContent = generatedCards.length;
+    if (statsCardsEl) statsCardsEl.textContent = generatedCards.length;
+    if (!pillsEl) return;
     
     if (generatedCards.length === 0) {
         pillsEl.innerHTML = `<span style="color: var(--text-muted); font-size: 0.9rem;">Ningún cartón registrado todavía.</span>`;
