@@ -670,6 +670,34 @@ function parsePlaylistText(text) {
         });
 }
 
+function normalizeSongIdentity(value) {
+    return String(value || "")
+        .toLowerCase()
+        .normalize("NFD")
+        .replace(/[\u0300-\u036f]/g, "")
+        .replace(/[^\w\s]/g, " ")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function ensureSongIds(songs) {
+    return songs.map((song, index) => ({
+        ...song,
+        id: song.id || `song-${index}`,
+        songIndex: Number.isInteger(song.songIndex) ? song.songIndex : index,
+        titleKey: song.titleKey || normalizeSongIdentity(song.title),
+        artistKey: song.artistKey || normalizeSongIdentity(song.artist)
+    }));
+}
+
+function getSongIdentityKeys(song) {
+    if (!song) return [];
+    const keys = [];
+    if (song.id) keys.push(`id:${song.id}`);
+    keys.push(`text:${normalizeSongIdentity(song.artist)}::${normalizeSongIdentity(song.title)}`);
+    return keys.filter(Boolean);
+}
+
 // Configurar Drag and Drop para MP3s locales
 function setupDragAndDrop() {
     const dropZone = document.getElementById("drop-zone");
@@ -790,6 +818,8 @@ function startGame() {
         alert("No se han cargado canciones válidas.");
         return;
     }
+
+    gameSongs = ensureSongIds(gameSongs);
 
     // Mezclar el orden de las canciones
     drawOrder = Array.from({ length: gameSongs.length }, (_, i) => i);
@@ -1358,17 +1388,16 @@ function validateCardById() {
     resultContainer.classList.remove("hidden");
     resultContainer.innerHTML = "";
 
-    // Contar canciones marcadas que efectivamente han sonado
+    // Contar canciones del cartón que efectivamente han sonado
     let hitsCount = 0;
     const songVerificationList = [];
+    const playedSongKeys = new Set(
+        playedSongs
+            .flatMap(idx => getSongIdentityKeys(gameSongs[idx]))
+    );
 
     card.songs.forEach(song => {
-        // Encontrar si esta canción ha sonado en el juego actual
-        // Buscamos coincidencia exacta de título y artista
-        const hasPlayed = playedSongs.some(idx => {
-            const playedSong = gameSongs[idx];
-            return playedSong.title === song.title && playedSong.artist === song.artist;
-        });
+        const hasPlayed = getSongIdentityKeys(song).some(key => playedSongKeys.has(key));
 
         if (hasPlayed) {
             hitsCount++;
@@ -2025,7 +2054,7 @@ function handleGuestGameState(data, emptyDesc) {
         return;
     }
 
-    gameSongs = songs;
+    gameSongs = ensureSongIds(songs);
     playedSongs = data.playedSongs || [];
     gameSessionId = sessionId;
     
@@ -2162,7 +2191,7 @@ function shuffleArray(array) {
 }
 
 function getRandomSubset(arr, n) {
-    const shuffled = [...arr];
+    const shuffled = arr.map(item => ({ ...item }));
     shuffleArray(shuffled);
     return shuffled.slice(0, n);
 }
