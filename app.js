@@ -132,6 +132,9 @@ let guestLastSessionId = null;
 let guestRegisteredCardIds = new Set();
 let guestPendingCard = null;
 let guestCardRegisterInterval = null;
+let hostApiSyncInterval = null;
+let hostApiCardsInterval = null;
+let guestApiPollInterval = null;
 
 // Nodos de Audio Visualizer
 let audioAnalyser = null;
@@ -503,6 +506,7 @@ function startGame() {
 
     // Broadcast con reintentos para sincronizar invitados ya conectados o recien abiertos.
     broadcastGameStateWithRetry();
+    publishRoomStateToApi();
 
     playSound('draw');
 }
@@ -1230,6 +1234,8 @@ function initHostPeer() {
         if (qrImg) {
             qrImg.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(shareUrl)}`;
         }
+
+        startHostApiSync();
     });
 
     peer.on('connection', (connection) => {
@@ -1266,6 +1272,88 @@ function initHostPeer() {
             initHostPeer();
         }
     });
+}
+
+function getRoomApiUrl(targetRoomId = roomId) {
+    return `/api/room?room=${encodeURIComponent(targetRoomId)}`;
+}
+
+async function postRoomApi(targetRoomId, payload) {
+    const response = await fetch(getRoomApiUrl(targetRoomId), {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(payload)
+    });
+
+    if (!response.ok) {
+        throw new Error(`Room API ${response.status}`);
+    }
+
+    return response.json();
+}
+
+async function fetchRoomApi(targetRoomId) {
+    const response = await fetch(getRoomApiUrl(targetRoomId), {
+        cache: "no-store"
+    });
+
+    if (!response.ok) {
+        throw new Error(`Room API ${response.status}`);
+    }
+
+    return response.json();
+}
+
+function startHostApiSync() {
+    stopHostApiSync();
+    publishRoomStateToApi();
+    syncHostCardsFromApi();
+    hostApiSyncInterval = setInterval(publishRoomStateToApi, 1500);
+    hostApiCardsInterval = setInterval(syncHostCardsFromApi, 1500);
+}
+
+function stopHostApiSync() {
+    if (hostApiSyncInterval) {
+        clearInterval(hostApiSyncInterval);
+        hostApiSyncInterval = null;
+    }
+    if (hostApiCardsInterval) {
+        clearInterval(hostApiCardsInterval);
+        hostApiCardsInterval = null;
+    }
+}
+
+async function publishRoomStateToApi() {
+    if (!roomId) return;
+    try {
+        await postRoomApi(roomId, {
+            action: "state",
+            state: getCurrentGameState()
+        });
+    } catch (error) {
+        console.warn("No se pudo publicar estado por API:", error);
+    }
+}
+
+async function syncHostCardsFromApi() {
+    if (!roomId) return;
+    try {
+        const room = await fetchRoomApi(roomId);
+        const cards = room.cards || [];
+        let changed = false;
+        cards.forEach((card) => {
+            if (card && !generatedCards.some(existing => existing.id === card.id)) {
+                generatedCards.push(card);
+                changed = true;
+            }
+        });
+        if (changed) {
+            calculatePrizes();
+            updateActiveCardsUI();
+        }
+    } catch (error) {
+        // La sala puede no existir todavia justo al cargar el host.
+    }
 }
 
 function getCurrentGameState() {
@@ -1370,8 +1458,10 @@ function updateActiveCardsUI() {
 }
 
 function connectToRoom(hostRoomId) {
+    roomId = hostRoomId;
     const emptyDesc = document.querySelector("#cards-container .empty-state p");
     if (emptyDesc) emptyDesc.textContent = "Conectando con el organizador...";
+    startGuestApiPolling(hostRoomId, emptyDesc);
     
     peer = new Peer(undefined, peerConfig);
 
@@ -1404,6 +1494,7 @@ function connectToRoom(hostRoomId) {
             if (emptyDesc) emptyDesc.textContent = "Conectado. Esperando que el organizador comience la partida...";
             startGuestReadyLoop();
         });
+
     });
 
     peer.on('error', (err) => {
@@ -1412,10 +1503,38 @@ function connectToRoom(hostRoomId) {
             if (err.type === 'peer-unavailable') {
                 emptyDesc.innerHTML = `<span style="color: var(--danger);">La sala del organizador (${hostRoomId}) no existe o ha caducado. Asegúrate de que el ordenador tiene la partida abierta.</span>`;
             } else {
-                emptyDesc.innerHTML = `<span style="color: var(--danger);">Error de red: ${err.type || err}</span>`;
+                emptyDesc.innerHTML = `<span style="color: var(--danger);">WebRTC no conecto. Usando sincronizacion por servidor...</span>`;
+                startGuestApiPolling(hostRoomId, emptyDesc);
             }
         }
     });
+}
+
+function startGuestApiPolling(hostRoomId, emptyDesc) {
+    stopGuestApiPolling();
+    const poll = async () => {
+        try {
+            const room = await fetchRoomApi(hostRoomId);
+            if (room && room.state) {
+                handleGuestGameState(room.state, emptyDesc);
+            } else if (emptyDesc) {
+                emptyDesc.textContent = "Conectado por servidor. Esperando que el organizador comience la partida...";
+            }
+        } catch (error) {
+            if (emptyDesc && !gameSongs.length) {
+                emptyDesc.textContent = "Buscando sala por servidor...";
+            }
+        }
+    };
+    poll();
+    guestApiPollInterval = setInterval(poll, 1500);
+}
+
+function stopGuestApiPolling() {
+    if (guestApiPollInterval) {
+        clearInterval(guestApiPollInterval);
+        guestApiPollInterval = null;
+    }
 }
 
 function startGuestReadyLoop() {
@@ -1469,11 +1588,28 @@ function registerGuestCardWithRetry(card) {
                 card: guestPendingCard
             });
         }
+        registerGuestCardViaApi(guestPendingCard);
     };
 
     stopGuestCardRegisterLoop();
     sendRegistration();
     guestCardRegisterInterval = setInterval(sendRegistration, 1000);
+}
+
+async function registerGuestCardViaApi(card) {
+    if (!card || !roomId) return;
+    try {
+        await postRoomApi(roomId, {
+            action: "register-card",
+            gameSessionId: gameSessionId,
+            card: card
+        });
+        if (!conn || !conn.open) {
+            stopGuestCardRegisterLoop();
+        }
+    } catch (error) {
+        console.warn("No se pudo registrar carton por API:", error);
+    }
 }
 
 function stopGuestCardRegisterLoop() {
@@ -1507,6 +1643,7 @@ function handleGuestGameState(data, emptyDesc) {
         guestRegisteredCardIds = new Set();
         stopGuestCardRegisterLoop();
         stopGuestReadyLoop();
+        stopGuestApiPolling();
         if (emptyDesc) emptyDesc.textContent = "Partida recibida. Generando tu carton...";
         generatePlayerCards();
     }
