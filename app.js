@@ -482,7 +482,25 @@ const PRESET_PLAYLISTS = {
         { title: "Raggio di Sole", artist: "Mawot", ytId: "" },
         { title: "I'M A QUEEN", artist: "Mel Ömana", ytId: "" },
         { title: "ESA DIVA", artist: "Melody", ytId: "" },
-        { title: "REINAS", artist: "Sonia y Selena", ytId: "" }
+        { title: "REINAS", artist: "Sonia y Selena", ytId: "" },
+        { title: "Turista", artist: "ASHA", ytId: "" },
+        { title: "Dopamina", artist: "Atyat", ytId: "" },
+        { title: "Bailándote", artist: "Dani J", ytId: "" },
+        { title: "Rakata", artist: "Dora & Marlon Collins", ytId: "" },
+        { title: "SOBRAN GILIPO**AS", artist: "Funambulista", ytId: "" },
+        { title: "Velita", artist: "Greg Taro", ytId: "" },
+        { title: "¿Qué vas a hacer?", artist: "Izan Llunas", ytId: "" },
+        { title: "Los Ojos No Mienten", artist: "Kenneth", ytId: "" },
+        { title: "El Amor Te Da Miedo", artist: "KITAI", ytId: "" },
+        { title: "No Volveré A Llorar", artist: "KU Minerva", ytId: "" },
+        { title: "Bomba de Amor", artist: "Luna Ki", ytId: "" },
+        { title: "Las Damas y el Vagabundo", artist: "María León ft. Julia Medina", ytId: "" },
+        { title: "Tócame", artist: "MAYO", ytId: "" },
+        { title: "Despierto Amándote", artist: "Miranda! & bailamamá", ytId: "" },
+        { title: "Mi Mitad", artist: "Mikel Herzog Jr.", ytId: "" },
+        { title: "Mataora", artist: "Rosalinda Galán", ytId: "" },
+        { title: "Tú No Me Quieres", artist: "The Quinquis", ytId: "" },
+        { title: "T AMARÉ", artist: "Tony Grox & LUCYCALYS", ytId: "" }
     ]
 };
 
