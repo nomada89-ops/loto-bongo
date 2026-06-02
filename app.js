@@ -135,6 +135,7 @@ let guestCardRegisterInterval = null;
 let hostApiSyncInterval = null;
 let hostApiCardsInterval = null;
 let guestApiPollInterval = null;
+let guestCardGridSize = null;
 
 // Nodos de Audio Visualizer
 let audioAnalyser = null;
@@ -209,6 +210,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('room')) {
         isGuestUser = true;
+        document.body.classList.add("guest-mode");
         const targetRoom = urlParams.get('room');
         
         // Ocultar botones de navegación del host
@@ -881,7 +883,9 @@ function generatePlayerCards() {
     if (isGuestUser) {
         qty = 1; // Un invitado en móvil solo necesita 1 cartón
     }
-    const sizeSelect = document.getElementById("card-grid-size").value;
+    const sizeSelect = isGuestUser && guestCardGridSize
+        ? guestCardGridSize
+        : document.getElementById("card-grid-size").value;
     
     let gridSize = 16; // 4x4 por defecto
     let gridClass = "grid-4x4";
@@ -917,6 +921,9 @@ function generatePlayerCards() {
         // Crear Cartón en Pantalla
         const cardEl = document.createElement("div");
         cardEl.className = "bingo-card";
+        if (isGuestUser) {
+            cardEl.classList.add("mobile-bingo-card");
+        }
         cardEl.id = `card-${cardId}`;
         
         let cellsHTML = "";
@@ -1389,6 +1396,7 @@ function getCurrentGameState() {
         songs: gameSongs,
         playedSongs: playedSongs,
         gridSize: document.getElementById("card-grid-size").value,
+        mobileGridSize: document.getElementById("mobile-card-grid-size").value,
         cards: generatedCards
     };
 }
@@ -1662,8 +1670,9 @@ function handleGuestGameState(data, emptyDesc) {
     gameSessionId = sessionId;
     
     const sizeSelect = document.getElementById("card-grid-size");
-    if (sizeSelect && data.gridSize) {
-        sizeSelect.value = data.gridSize;
+    guestCardGridSize = data.mobileGridSize || data.gridSize || "3x3";
+    if (sizeSelect && guestCardGridSize) {
+        sizeSelect.value = guestCardGridSize;
     }
 
     if (guestLastSessionId !== sessionId) {

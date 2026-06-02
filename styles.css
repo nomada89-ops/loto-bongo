@@ -930,6 +930,92 @@ button:disabled {
     opacity: 0.4;
 }
 
+body.guest-mode {
+    min-height: 100dvh;
+}
+
+body.guest-mode .app-main {
+    padding: 10px;
+}
+
+body.guest-mode #tab-player .glass-panel {
+    padding: 12px;
+    border-radius: 0;
+    border-left: 0;
+    border-right: 0;
+}
+
+body.guest-mode .cards-wrapper {
+    margin-top: 10px;
+    gap: 12px;
+    align-items: stretch;
+}
+
+.mobile-bingo-card {
+    max-width: none;
+}
+
+body.guest-mode .mobile-bingo-card {
+    padding: 12px;
+    min-height: calc(100dvh - 130px);
+    display: flex;
+    flex-direction: column;
+    justify-content: stretch;
+}
+
+body.guest-mode .mobile-bingo-card .card-top {
+    flex: 0 0 auto;
+}
+
+body.guest-mode .mobile-bingo-card .card-grid {
+    flex: 1 1 auto;
+    gap: 8px;
+}
+
+body.guest-mode .mobile-bingo-card .card-cell {
+    min-height: 0;
+    padding: 10px 6px;
+    touch-action: manipulation;
+}
+
+body.guest-mode .mobile-bingo-card .cell-song-title {
+    font-size: clamp(0.72rem, 3.2vw, 1rem);
+    line-height: 1.12;
+    -webkit-line-clamp: 3;
+}
+
+body.guest-mode .mobile-bingo-card .cell-song-artist {
+    font-size: clamp(0.62rem, 2.6vw, 0.82rem);
+}
+
+body.guest-mode .mobile-bingo-card .grid-3x3 .card-cell {
+    min-height: 18dvh;
+}
+
+body.guest-mode .mobile-bingo-card .grid-4x4 .card-cell {
+    min-height: 13dvh;
+}
+
+@media (max-width: 640px) {
+    body.guest-mode .panel-header.flex-header {
+        gap: 6px;
+        margin-bottom: 8px;
+    }
+
+    body.guest-mode .panel-header h2 {
+        font-size: 1.15rem;
+    }
+
+    body.guest-mode .panel-desc {
+        display: none;
+    }
+
+    body.guest-mode .card-id,
+    body.guest-mode .card-logo {
+        font-size: 0.72rem;
+    }
+}
+
 /* ==========================================================================
    VALIDADOR
    ========================================================================== */
@@ -1665,4 +1751,3 @@ input:checked + .slider:before {
     font-family: var(--font-family) !important;
     outline: none !important;
 }
-
