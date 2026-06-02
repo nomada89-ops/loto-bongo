@@ -1193,13 +1193,24 @@ function startVisualizerDrawing() {
 /* ==========================================================================
    PEERJS P2P & FLOATING EMOJIS LOGIC
    ========================================================================== */
-// Configuración común de PeerJS con servidores STUN públicos de Google para garantizar conexión móvil
+// Configuración común de PeerJS con servidores STUN y TURN públicos para garantizar conexión móvil incluso tras firewalls/NATs
 const peerConfig = {
     config: {
         iceServers: [
             { urls: 'stun:stun.l.google.com:19302' },
             { urls: 'stun:stun1.l.google.com:19302' },
-            { urls: 'stun:stun2.l.google.com:19302' }
+            { urls: 'stun:stun2.l.google.com:19302' },
+            { urls: 'stun:openrelay.metered.ca:80' },
+            {
+                urls: 'turn:openrelay.metered.ca:80?transport=udp',
+                username: 'openrelay',
+                credential: 'openrelay'
+            },
+            {
+                urls: 'turn:openrelay.metered.ca:443?transport=tcp',
+                username: 'openrelay',
+                credential: 'openrelay'
+            }
         ]
     },
     debug: 1
