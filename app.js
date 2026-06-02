@@ -1605,6 +1605,7 @@ function handleGuestConnectionData(data, emptyDesc) {
 }
 
 function registerGuestCardWithRetry(card) {
+    stopGuestCardRegisterLoop();
     guestPendingCard = card;
     guestRegisteredCardIds.add(card.id);
 
@@ -1619,7 +1620,6 @@ function registerGuestCardWithRetry(card) {
         registerGuestCardViaApi(guestPendingCard);
     };
 
-    stopGuestCardRegisterLoop();
     sendRegistration();
     guestCardRegisterInterval = setInterval(sendRegistration, 1000);
 }
@@ -1632,7 +1632,7 @@ async function registerGuestCardViaApi(card) {
             gameSessionId: gameSessionId,
             card: card
         });
-        if (!conn || !conn.open) {
+        if (guestPendingCard && guestPendingCard.id === card.id) {
             stopGuestCardRegisterLoop();
         }
     } catch (error) {
