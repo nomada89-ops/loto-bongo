@@ -1,13 +1,62 @@
-const rooms = globalThis.__lotoBongoRooms || new Map();
-globalThis.__lotoBongoRooms = rooms;
+const memoryRooms = globalThis.__lotoBongoRooms || new Map();
+globalThis.__lotoBongoRooms = memoryRooms;
 
-const MAX_ROOM_AGE_MS = 1000 * 60 * 60 * 4;
+const ROOM_TTL_SECONDS = 60 * 60 * 4;
+const MAX_ROOM_AGE_MS = ROOM_TTL_SECONDS * 1000;
+const UPSTASH_URL = process.env.KV_REST_API_URL || process.env.UPSTASH_REDIS_REST_URL;
+const UPSTASH_TOKEN = process.env.KV_REST_API_TOKEN || process.env.UPSTASH_REDIS_REST_TOKEN;
 
 function json(res, status, body) {
   res.statusCode = status;
   res.setHeader("Content-Type", "application/json; charset=utf-8");
   res.setHeader("Cache-Control", "no-store");
   res.end(JSON.stringify(body));
+}
+
+function roomKey(roomId) {
+  return `loto-bongo-room:${roomId}`;
+}
+
+function hasDurableStore() {
+  return Boolean(UPSTASH_URL && UPSTASH_TOKEN);
+}
+
+async function redisCommand(command) {
+  const response = await fetch(UPSTASH_URL, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${UPSTASH_TOKEN}`,
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify(command)
+  });
+
+  if (!response.ok) {
+    throw new Error(`Redis REST ${response.status}`);
+  }
+
+  return response.json();
+}
+
+async function loadRoom(roomId) {
+  if (hasDurableStore()) {
+    const data = await redisCommand(["GET", roomKey(roomId)]);
+    if (!data.result) return null;
+    return JSON.parse(data.result);
+  }
+
+  return memoryRooms.get(roomId) || null;
+}
+
+async function saveRoom(roomId, room) {
+  room.updatedAt = Date.now();
+
+  if (hasDurableStore()) {
+    await redisCommand(["SET", roomKey(roomId), JSON.stringify(room), "EX", ROOM_TTL_SECONDS]);
+    return;
+  }
+
+  memoryRooms.set(roomId, room);
 }
 
 function readBody(req) {
@@ -35,17 +84,17 @@ function readBody(req) {
   });
 }
 
-function pruneRooms() {
+function pruneMemoryRooms() {
   const now = Date.now();
-  for (const [roomId, room] of rooms.entries()) {
+  for (const [roomId, room] of memoryRooms.entries()) {
     if (now - room.updatedAt > MAX_ROOM_AGE_MS) {
-      rooms.delete(roomId);
+      memoryRooms.delete(roomId);
     }
   }
 }
 
 module.exports = async function handler(req, res) {
-  pruneRooms();
+  pruneMemoryRooms();
 
   const url = new URL(req.url, `https://${req.headers.host || "localhost"}`);
   const roomId = url.searchParams.get("room");
@@ -56,12 +105,12 @@ module.exports = async function handler(req, res) {
   }
 
   if (req.method === "GET") {
-    const room = rooms.get(roomId);
+    const room = await loadRoom(roomId);
     if (!room) {
-      json(res, 404, { error: "Room not found" });
+      json(res, 404, { error: "Room not found", durable: hasDurableStore() });
       return;
     }
-    json(res, 200, room);
+    json(res, 200, { ...room, durable: hasDurableStore() });
     return;
   }
 
@@ -73,7 +122,7 @@ module.exports = async function handler(req, res) {
 
   try {
     const body = await readBody(req);
-    const current = rooms.get(roomId) || {
+    const current = await loadRoom(roomId) || {
       state: null,
       cards: [],
       updatedAt: Date.now()
@@ -81,9 +130,8 @@ module.exports = async function handler(req, res) {
 
     if (body.action === "state") {
       current.state = body.state || null;
-      current.updatedAt = Date.now();
-      rooms.set(roomId, current);
-      json(res, 200, { ok: true });
+      await saveRoom(roomId, current);
+      json(res, 200, { ok: true, durable: hasDurableStore() });
       return;
     }
 
@@ -91,14 +139,13 @@ module.exports = async function handler(req, res) {
       if (!current.cards.some((card) => card.id === body.card.id)) {
         current.cards.push(body.card);
       }
-      current.updatedAt = Date.now();
-      rooms.set(roomId, current);
-      json(res, 200, { ok: true, cardId: body.card.id });
+      await saveRoom(roomId, current);
+      json(res, 200, { ok: true, cardId: body.card.id, durable: hasDurableStore() });
       return;
     }
 
     json(res, 400, { error: "Invalid action" });
   } catch (error) {
-    json(res, 400, { error: error.message || "Bad request" });
+    json(res, 500, { error: error.message || "Room API error", durable: hasDurableStore() });
   }
 };

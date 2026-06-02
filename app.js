@@ -1340,6 +1340,9 @@ async function syncHostCardsFromApi() {
     try {
         const room = await fetchRoomApi(roomId);
         const cards = room.cards || [];
+        if (room.durable === false) {
+            console.warn("Room API sin storage durable. En Vercel, configura KV/Upstash para sincronizar cartones entre dispositivos.");
+        }
         let changed = false;
         cards.forEach((card) => {
             if (card && !generatedCards.some(existing => existing.id === card.id)) {
@@ -1363,7 +1366,8 @@ function getCurrentGameState() {
         hasStarted: gameSongs.length > 0,
         songs: gameSongs,
         playedSongs: playedSongs,
-        gridSize: document.getElementById("card-grid-size").value
+        gridSize: document.getElementById("card-grid-size").value,
+        cards: generatedCards
     };
 }
 
@@ -1645,7 +1649,6 @@ function handleGuestGameState(data, emptyDesc) {
         guestRegisteredCardIds = new Set();
         stopGuestCardRegisterLoop();
         stopGuestReadyLoop();
-        stopGuestApiPolling();
         if (emptyDesc) emptyDesc.textContent = "Partida recibida. Generando tu carton...";
         generatePlayerCards();
     }
