@@ -503,6 +503,7 @@ let audioPlayerElement = null;
 let playbackTimer = null;
 let playbackTimeLeft = 30; // 30 segundos por canción
 const PLAYBACK_MAX_TIME = 30;
+const AUTOPLAY_NEXT_DELAY_MS = 250;
 let autoplayEnabled = false;
 let autoplayTimeout = null;
 
@@ -1047,7 +1048,7 @@ function drawNextSong() {
     stopAudio();
 
     if (autoplayTimeout) {
-        clearInterval(autoplayTimeout);
+        clearTimeout(autoplayTimeout);
         autoplayTimeout = null;
     }
 
@@ -1355,7 +1356,7 @@ function togglePlayIcon(isPlaying) {
 function handleAutoplayToggle(checkbox) {
     autoplayEnabled = checkbox.checked;
     if (!autoplayEnabled && autoplayTimeout) {
-        clearInterval(autoplayTimeout);
+        clearTimeout(autoplayTimeout);
         autoplayTimeout = null;
         updateAudioStatus("Listo", "idle");
     }
@@ -1374,18 +1375,11 @@ function startTimer() {
             revealTrackName();
             
             if (autoplayEnabled) {
-                let countdown = 5;
-                updateAudioStatus(`Siguiente canción en ${countdown}s...`, "loading");
-                autoplayTimeout = setInterval(() => {
-                    countdown--;
-                    if (countdown > 0) {
-                        updateAudioStatus(`Siguiente canción en ${countdown}s...`, "loading");
-                    } else {
-                        clearInterval(autoplayTimeout);
-                        autoplayTimeout = null;
-                        drawNextSong();
-                    }
-                }, 1000);
+                updateAudioStatus("Siguiente canción...", "loading");
+                autoplayTimeout = setTimeout(() => {
+                    autoplayTimeout = null;
+                    drawNextSong();
+                }, AUTOPLAY_NEXT_DELAY_MS);
             }
         }
     }, 100);
@@ -1413,7 +1407,7 @@ function resetGame() {
         generatedCards = [];
         autoplayEnabled = false;
         if (autoplayTimeout) {
-            clearInterval(autoplayTimeout);
+            clearTimeout(autoplayTimeout);
             autoplayTimeout = null;
         }
         const switchEl = document.getElementById("autoplay-switch");
