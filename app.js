@@ -558,9 +558,116 @@ function handleSourceChange() {
         document.getElementById("source-preset-config").classList.remove("hidden");
     } else if (source === "local") {
         document.getElementById("source-local-config").classList.remove("hidden");
+    } else if (source === "playlist-text") {
+        document.getElementById("source-playlist-config").classList.remove("hidden");
     } else if (source === "external") {
         document.getElementById("source-external-config").classList.remove("hidden");
     }
+}
+
+function cleanPlaylistField(value) {
+    return String(value || "")
+        .replace(/^["']|["']$/g, "")
+        .replace(/\s+/g, " ")
+        .trim();
+}
+
+function looksLikePlaylistHeader(line) {
+    const tabNormalized = line.toLowerCase().trim();
+    const normalized = line.toLowerCase().replace(/\s+/g, " ").trim();
+    if (tabNormalized === "artist\ttitle" || tabNormalized === "title\tartist") {
+        return true;
+    }
+    return [
+        "artist - title",
+        "artista - canción",
+        "artista - cancion",
+        "title, artist",
+        "artist, title",
+        "canción, artista",
+        "cancion, artista",
+        "artista, canción",
+        "artista, cancion"
+    ].includes(normalized);
+}
+
+function getPlaylistHeaderOrder(line) {
+    const tabNormalized = line.toLowerCase().trim();
+    const normalized = line.toLowerCase().replace(/\s+/g, " ").trim();
+    if (tabNormalized === "title\tartist" || ["title, artist", "canción, artista", "cancion, artista"].includes(normalized)) {
+        return "title-first";
+    }
+    if (looksLikePlaylistHeader(line)) {
+        return "artist-first";
+    }
+    return "artist-first";
+}
+
+function parseSongLine(line, order = "artist-first") {
+    let normalizedLine = line
+        .replace(/^\s*\d+[\).\-\s]+/, "")
+        .trim();
+
+    if (!normalizedLine || /^https?:\/\//i.test(normalizedLine)) {
+        return null;
+    }
+
+    const tabParts = normalizedLine.split("\t").map(cleanPlaylistField).filter(Boolean);
+    if (tabParts.length >= 2) {
+        return order === "title-first"
+            ? { title: tabParts[0], artist: tabParts[1] }
+            : { artist: tabParts[0], title: tabParts[1] };
+    }
+
+    normalizedLine = normalizedLine.replace(/\s+/g, " ");
+    const separators = [" - ", " – ", " — ", " | "];
+    const separator = separators.find(item => normalizedLine.includes(item));
+    if (separator) {
+        const parts = normalizedLine.split(separator).map(cleanPlaylistField).filter(Boolean);
+        if (parts.length >= 2) {
+            return { artist: parts[0], title: parts.slice(1).join(separator.trim()) };
+        }
+    }
+
+    const csvParts = normalizedLine.split(",").map(cleanPlaylistField).filter(Boolean);
+    if (csvParts.length >= 2) {
+        return order === "title-first"
+            ? { title: csvParts[0], artist: csvParts[1] }
+            : { artist: csvParts[0], title: csvParts[1] };
+    }
+
+    return { artist: "Desconocido", title: cleanPlaylistField(normalizedLine) };
+}
+
+function parsePlaylistText(text) {
+    const seen = new Set();
+    let columnOrder = "artist-first";
+
+    return String(text || "")
+        .split(/\r?\n/)
+        .map(line => line.trim())
+        .filter(line => {
+            if (!line) return false;
+            if (looksLikePlaylistHeader(line)) {
+                columnOrder = getPlaylistHeaderOrder(line);
+                return false;
+            }
+            return true;
+        })
+        .map(line => parseSongLine(line, columnOrder))
+        .filter(Boolean)
+        .filter(song => {
+            const title = cleanPlaylistField(song.title);
+            const artist = cleanPlaylistField(song.artist) || "Desconocido";
+            if (!title) return false;
+            song.title = title;
+            song.artist = artist;
+
+            const key = `${song.artist.toLowerCase()}::${song.title.toLowerCase()}`;
+            if (seen.has(key)) return false;
+            seen.add(key);
+            return true;
+        });
 }
 
 // Configurar Drag and Drop para MP3s locales
@@ -669,6 +776,14 @@ function startGame() {
             }
             gameSongs.push({ title: title, artist: artist });
         });
+    } else if (source === "playlist-text") {
+        const text = document.getElementById("playlist-import-textarea").value;
+        gameSongs = parsePlaylistText(text);
+
+        if (gameSongs.length < 10) {
+            alert("Pega al menos 10 canciones válidas de Spotify, Apple Music o iTunes para poder jugar.");
+            return;
+        }
     }
 
     if (gameSongs.length === 0) {
@@ -915,7 +1030,7 @@ async function playSongAudio(song) {
     document.getElementById("btn-play-pause").disabled = false;
     togglePlayIcon(true);
 
-    if (source === "preset" || source === "external") {
+    if (source !== "local") {
         updateAudioStatus("Buscando en iTunes...", "loading");
         console.log(`Buscando preview de iTunes para: ${song.artist} - ${song.title}`);
         const previewUrl = await fetchItunesPreview(song.artist, song.title);

@@ -256,6 +256,13 @@ textarea.form-control {
     resize: vertical;
 }
 
+.form-hint {
+    margin: 8px 0 0;
+    font-size: 0.82rem;
+    line-height: 1.35;
+    color: var(--text-muted);
+}
+
 /* Buttons */
 .btn-primary, .btn-secondary, .btn-danger, .btn-primary-sm {
     font-family: var(--font-family);

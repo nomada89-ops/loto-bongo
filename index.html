@@ -60,6 +60,7 @@
                             <select id="music-source-select" class="form-control" onchange="handleSourceChange()">
                                 <option value="preset">Listas Temáticas Integradas</option>
                                 <option value="local">Subir archivos MP3 propios</option>
+                                <option value="playlist-text">Pegar lista Spotify / Apple Music / iTunes</option>
                                 <option value="external">Modo Solo Tablero (Música externa)</option>
                             </select>
                         </div>
@@ -106,6 +107,19 @@
                             <div class="form-group">
                                 <label for="external-songs-textarea">Introduce canciones (una por línea):</label>
                                 <textarea id="external-songs-textarea" class="form-control" rows="8" placeholder="Artista - Título de la canción&#10;Estopa - Como Camarón&#10;Shakira - Hips Don't Lie&#10;Daft Punk - One More Time"></textarea>
+                            </div>
+                        </div>
+
+                        <!-- Importación desde listas copiadas/exportadas -->
+                        <div id="source-playlist-config" class="source-config hidden">
+                            <div class="form-group">
+                                <label for="playlist-owner-input">Usuario o nombre de la lista:</label>
+                                <input id="playlist-owner-input" class="form-control" type="text" placeholder="@usuario, playlist de Spotify o biblioteca iTunes">
+                                <p class="form-hint">Spotify y Apple no permiten cargar canciones solo con usuario sin iniciar sesión. Pega aquí canciones copiadas o exportadas.</p>
+                            </div>
+                            <div class="form-group">
+                                <label for="playlist-import-textarea">Canciones de la lista:</label>
+                                <textarea id="playlist-import-textarea" class="form-control" rows="9" placeholder="Artista - Canción&#10;Rosalía - Despechá&#10;Queen - Don't Stop Me Now&#10;Bad Bunny&#9;Tití Me Preguntó&#10;1. Dua Lipa - Levitating"></textarea>
                             </div>
                         </div>
 
