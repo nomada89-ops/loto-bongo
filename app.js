@@ -234,10 +234,6 @@ document.addEventListener("DOMContentLoaded", () => {
         // Forzar vista en pestaña de jugador (cartones)
         switchTab('player');
         
-        // Mostrar el dock flotante de emojis
-        const emojiDock = document.getElementById("emoji-dock");
-        if (emojiDock) emojiDock.classList.remove("hidden");
-        
         // Conectar P2P con el host
         connectToRoom(targetRoom);
     } else {
@@ -1431,11 +1427,6 @@ function handleHostConnectionData(connection, data) {
         return;
     }
 
-    if (data.type === 'emoji') {
-        showFloatingEmojiOnScreen(data.emoji);
-        return;
-    }
-
     if (data.type === 'register-card' && data.card) {
         console.log('Registrando carton recibido:', data.card);
         if (!generatedCards.some(c => c.id === data.card.id)) {
@@ -1694,10 +1685,7 @@ function broadcastToGuests(data) {
 }
 
 function sendEmojiReaction(emoji) {
-    if (conn && conn.open) {
-        conn.send({ type: 'emoji', emoji: emoji });
-    }
-    showFloatingEmojiOnScreen(emoji);
+    // Emoji reactions were removed from the mobile guest UI to keep cards readable.
 }
 
 function showFloatingEmojiOnScreen(emoji) {
