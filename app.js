@@ -501,6 +501,198 @@ const PRESET_PLAYLISTS = {
         { title: "Mataora", artist: "Rosalinda Galán", ytId: "" },
         { title: "Tú No Me Quieres", artist: "The Quinquis", ytId: "" },
         { title: "T AMARÉ", artist: "Tony Grox & LUCYCALYS", ytId: "" }
+    ],
+    "latinos-clasicos": [
+        { title: "Vivir Mi Vida", artist: "Marc Anthony", ytId: "" },
+        { title: "La Bicicleta", artist: "Carlos Vives & Shakira", ytId: "" },
+        { title: "Propuesta Indecente", artist: "Romeo Santos", ytId: "" },
+        { title: "Darte un Beso", artist: "Prince Royce", ytId: "" },
+        { title: "Bachata Rosa", artist: "Juan Luis Guerra", ytId: "" },
+        { title: "La Carretera", artist: "Julio Iglesias", ytId: "" },
+        { title: "Quimbara", artist: "Celia Cruz", ytId: "" },
+        { title: "Oye Cómo Va", artist: "Santana", ytId: "" },
+        { title: "María", artist: "Ricky Martin", ytId: "" },
+        { title: "Livin' La Vida Loca", artist: "Ricky Martin", ytId: "" },
+        { title: "Suavemente", artist: "Elvis Crespo", ytId: "" },
+        { title: "La Camisa Negra", artist: "Juanes", ytId: "" },
+        { title: "A Puro Dolor", artist: "Son By Four", ytId: "" },
+        { title: "Color Esperanza", artist: "Diego Torres", ytId: "" },
+        { title: "Cali Pachanguero", artist: "Grupo Niche", ytId: "" },
+        { title: "Periódico de Ayer", artist: "Héctor Lavoe", ytId: "" },
+        { title: "El Cantante", artist: "Héctor Lavoe", ytId: "" },
+        { title: "Ven Devórame Otra Vez", artist: "Lalo Rodríguez", ytId: "" },
+        { title: "Déjame Entrar", artist: "Carlos Vives", ytId: "" },
+        { title: "Robarte un Beso", artist: "Carlos Vives & Sebastián Yatra", ytId: "" },
+        { title: "NASA", artist: "Camilo & Shakira", ytId: "" },
+        { title: "Tutu", artist: "Camilo & Pedro Capó", ytId: "" },
+        { title: "Ay Vamos", artist: "J Balvin", ytId: "" },
+        { title: "No Se Deje", artist: "Grupo Firme", ytId: "" },
+        { title: "Me Niego", artist: "Reik ft. Ozuna & Wisin", ytId: "" },
+        { title: "Travesuras", artist: "Nicky Jam", ytId: "" },
+        { title: "Te Regalo", artist: "Luis Fonsi", ytId: "" },
+        { title: "Despacito", artist: "Luis Fonsi ft. Daddy Yankee", ytId: "" },
+        { title: "Felices los 4", artist: "Maluma", ytId: "" },
+        { title: "Baila Conmigo", artist: "Selena Gomez & Rauw Alejandro", ytId: "" }
+    ],
+    "anos-80": [
+        { title: "Take On Me", artist: "a-ha", ytId: "djV11Xbc914" },
+        { title: "Every Breath You Take", artist: "The Police", ytId: "" },
+        { title: "Billie Jean", artist: "Michael Jackson", ytId: "Zi_XLOBDo_Y" },
+        { title: "Like a Virgin", artist: "Madonna", ytId: "" },
+        { title: "Sweet Dreams", artist: "Eurythmics", ytId: "" },
+        { title: "Don't You (Forget About Me)", artist: "Simple Minds", ytId: "" },
+        { title: "Under Pressure", artist: "Queen & David Bowie", ytId: "" },
+        { title: "99 Luftballons", artist: "Nena", ytId: "" },
+        { title: "Tainted Love", artist: "Soft Cell", ytId: "" },
+        { title: "Girls Just Want To Have Fun", artist: "Cyndi Lauper", ytId: "" },
+        { title: "Living on a Prayer", artist: "Bon Jovi", ytId: "" },
+        { title: "Wake Me Up Before You Go-Go", artist: "Wham!", ytId: "" },
+        { title: "Footloose", artist: "Kenny Loggins", ytId: "" },
+        { title: "Purple Rain", artist: "Prince", ytId: "" },
+        { title: "Jump", artist: "Van Halen", ytId: "" },
+        { title: "I Wanna Dance with Somebody", artist: "Whitney Houston", ytId: "" },
+        { title: "Never Gonna Give You Up", artist: "Rick Astley", ytId: "" },
+        { title: "Axel F", artist: "Harold Faltermeyer", ytId: "" },
+        { title: "The Final Countdown", artist: "Europe", ytId: "" },
+        { title: "Don't Stop Me Now", artist: "Queen", ytId: "" },
+        { title: "Blue Monday", artist: "New Order", ytId: "" },
+        { title: "Love Will Tear Us Apart", artist: "Joy Division", ytId: "" },
+        { title: "Personal Jesus", artist: "Depeche Mode", ytId: "" },
+        { title: "Just Like Heaven", artist: "The Cure", ytId: "" },
+        { title: "With or Without You", artist: "U2", ytId: "" },
+        { title: "Welcome to the Jungle", artist: "Guns N' Roses", ytId: "" },
+        { title: "Paranoid", artist: "Black Sabbath", ytId: "" },
+        { title: "Back in Black", artist: "AC/DC", ytId: "" },
+        { title: "Sweet Child O' Mine", artist: "Guns N' Roses", ytId: "1w7OgIMMRc4" },
+        { title: "Africa", artist: "Toto", ytId: "" }
+    ],
+    "bachata-salsa": [
+        { title: "Propuesta Indecente", artist: "Romeo Santos", ytId: "" },
+        { title: "Darte un Beso", artist: "Prince Royce", ytId: "" },
+        { title: "Bachata Rosa", artist: "Juan Luis Guerra", ytId: "" },
+        { title: "Eres Mía", artist: "Romeo Santos", ytId: "" },
+        { title: "Deja Vu", artist: "Prince Royce & Shakira", ytId: "" },
+        { title: "La Carretera", artist: "Julio Iglesias", ytId: "" },
+        { title: "Quimbara", artist: "Celia Cruz", ytId: "" },
+        { title: "Oye Cómo Va", artist: "Santana", ytId: "" },
+        { title: "Cali Pachanguero", artist: "Grupo Niche", ytId: "" },
+        { title: "Periódico de Ayer", artist: "Héctor Lavoe", ytId: "" },
+        { title: "El Cantante", artist: "Héctor Lavoe", ytId: "" },
+        { title: "Ven Devórame Otra Vez", artist: "Lalo Rodríguez", ytId: "" },
+        { title: "A Puro Dolor", artist: "Son By Four", ytId: "" },
+        { title: "Mi Gente", artist: "Héctor Lavoe", ytId: "" },
+        { title: "La Vida Es Un Carnaval", artist: "Celia Cruz", ytId: "" },
+        { title: "Suavemente", artist: "Elvis Crespo", ytId: "" },
+        { title: "Conga", artist: "Miami Sound Machine", ytId: "" },
+        { title: "La Bicicleta", artist: "Carlos Vives & Shakira", ytId: "" },
+        { title: "Vivir Mi Vida", artist: "Marc Anthony", ytId: "" },
+        { title: "Yo Viviré", artist: "Celia Cruz", ytId: "" },
+        { title: "Yamulemau", artist: "Joe Arroyo", ytId: "" },
+        { title: "Rebelión", artist: "Joe Arroyo", ytId: "" },
+        { title: "Si No Te Hubieras Ido", artist: "Marco Antonio Solís", ytId: "" },
+        { title: "Nadie Como Tú", artist: "La Makina", ytId: "" },
+        { title: "Tu Amor Me Hace Bien", artist: "Oscar D'León", ytId: "" },
+        { title: "Llorarás", artist: "Oscar D'León", ytId: "" },
+        { title: "Detalles", artist: "Roberto Carlos", ytId: "" },
+        { title: "Soy Todo", artist: "Los Adolescentes", ytId: "" },
+        { title: "Nuestro Sueño", artist: "Los Adolescentes", ytId: "" },
+        { title: "Baila Morena", artist: "Héctor & Tito", ytId: "" }
+    ],
+    "flamenco-copla": [
+        { title: "La Llorona", artist: "Chavela Vargas", ytId: "" },
+        { title: "Ojos Verdes", artist: "Camarón de la Isla", ytId: "" },
+        { title: "Volando Voy", artist: "Camarón de la Isla", ytId: "" },
+        { title: "Como el Agua", artist: "Camarón de la Isla", ytId: "" },
+        { title: "Volver", artist: "Camarón de la Isla", ytId: "" },
+        { title: "Bulería", artist: "Fosforito", ytId: "" },
+        { title: "Señora", artist: "Rosal", ytId: "" },
+        { title: "Una Noche de Amor", artist: "Rocío Jurado", ytId: "" },
+        { title: "Como la Luna", artist: "Rocío Jurado", ytId: "" },
+        { title: "Ese Lunar", artist: "Niña de la Peña", ytId: "" },
+        { title: "Tatuaje", artist: "La Argentinita", ytId: "" },
+        { title: "Romance de la Reina Mercedes", artist: "Pastora Imperio", ytId: "" },
+        { title: "Tirios y Troyanos", artist: "Antonio Mairena", ytId: "" },
+        { title: "La Zarzamora", artist: "Fosforito", ytId: "" },
+        { title: "Candil", artist: "Pepe de la Matrona", ytId: "" },
+        { title: "Y nos dieron las diez", artist: "Pepe de la Matrona", ytId: "" },
+        { title: "Ojos Verdes", artist: "Antonio Chacón", ytId: "" },
+        { title: "La Niña de Fuego", artist: "Camarón de la Isla", ytId: "" },
+        { title: "Santamaria", artist: "Camarón de la Isla", ytId: "" },
+        { title: "Tiene las Estrellas", artist: "Vicente Soto", ytId: "" },
+        { title: "Por Tangos de la Buhaira", artist: "Perrate", ytId: "" },
+        { title: "Yerma", artist: "Enrique Morente", ytId: "" },
+        { title: "Omega", artist: "Enrique Morente", ytId: "" },
+        { title: "La Leyenda del Hada y el Mago", artist: "El Camarón de la Isla", ytId: "" },
+        { title: "Tu Mirá", artist: "Rosalía", ytId: "" },
+        { title: "De Plata", artist: "Rosalía", ytId: "" },
+        { title: "Bagdad", artist: "Rosalía", ytId: "" },
+        { title: "Malamente", artist: "Rosalía", ytId: "" },
+        { title: "La Bichatería", artist: "C. Tangana", ytId: "" },
+        { title: "Demasiadas Mujeres", artist: "C. Tangana", ytId: "" }
+    ],
+    "mega-fiesta": [
+        { title: "Tusa", artist: "Karol G & Nicki Minaj", ytId: "" },
+        { title: "Mi Gente", artist: "J Balvin", ytId: "" },
+        { title: "Despacito", artist: "Luis Fonsi ft. Daddy Yankee", ytId: "" },
+        { title: "Bailando", artist: "Enrique Iglesias", ytId: "" },
+        { title: "Waka Waka", artist: "Shakira", ytId: "" },
+        { title: "La Bicicleta", artist: "Carlos Vives & Shakira", ytId: "" },
+        { title: "Vivir Mi Vida", artist: "Marc Anthony", ytId: "" },
+        { title: "Danza Kuduro", artist: "Don Omar", ytId: "" },
+        { title: "Gasolina", artist: "Daddy Yankee", ytId: "" },
+        { title: "Con Calma", artist: "Daddy Yankee", ytId: "" },
+        { title: "Felices los 4", artist: "Maluma", ytId: "" },
+        { title: "Hawái", artist: "Maluma", ytId: "" },
+        { title: "Bichota", artist: "Karol G", ytId: "" },
+        { title: "Provenza", artist: "Karol G", ytId: "" },
+        { title: "Despechá", artist: "Rosalía", ytId: "" },
+        { title: "Macarena", artist: "Los Del Río", ytId: "" },
+        { title: "Livin' La Vida Loca", artist: "Ricky Martin", ytId: "" },
+        { title: "La Copa de la Vida", artist: "Ricky Martin", ytId: "" },
+        { title: "Suavemente", artist: "Elvis Crespo", ytId: "" },
+        { title: "Oye Cómo Va", artist: "Santana", ytId: "" },
+        { title: "Conga", artist: "Miami Sound Machine", ytId: "" },
+        { title: "La Gozadera", artist: "Gente de Zona ft. Marc Anthony", ytId: "" },
+        { title: "Baila Morena", artist: "Héctor & Tito", ytId: "" },
+        { title: "Pobre Diabla", artist: "Don Omar", ytId: "" },
+        { title: "Salió El Sol", artist: "Don Omar", ytId: "" },
+        { title: "Dile", artist: "Don Omar", ytId: "" },
+        { title: "El Perdón", artist: "Nicky Jam & Enrique Iglesias", ytId: "" },
+        { title: "Chantaje", artist: "Shakira ft. Maluma", ytId: "" },
+        { title: "Clandestino", artist: "Shakira & Maluma", ytId: "" },
+        { title: "La Tortura", artist: "Shakira ft. Alejandro Sanz", ytId: "" }
+    ],
+    "disco-clasico": [
+        { title: "Billie Jean", artist: "Michael Jackson", ytId: "Zi_XLOBDo_Y" },
+        { title: "Thriller", artist: "Michael Jackson", ytId: "sOnqjkJTMaA" },
+        { title: "Beat It", artist: "Michael Jackson", ytId: "" },
+        { title: "Smooth Criminal", artist: "Michael Jackson", ytId: "" },
+        { title: "Don't Stop 'Til You Get Enough", artist: "Michael Jackson", ytId: "" },
+        { title: "Rock with You", artist: "Michael Jackson", ytId: "" },
+        { title: "Stayin' Alive", artist: "Bee Gees", ytId: "I_izvAbhExY" },
+        { title: "Night Fever", artist: "Bee Gees", ytId: "" },
+        { title: "How Deep Is Your Love", artist: "Bee Gees", ytId: "" },
+        { title: "More Than a Woman", artist: "Bee Gees", ytId: "" },
+        { title: "Rivers of Babylon", artist: "Boney M.", ytId: "" },
+        { title: "Rasputin", artist: "Boney M.", ytId: "" },
+        { title: "Daddy Cool", artist: "Boney M.", ytId: "" },
+        { title: "Sunny", artist: "Boney M.", ytId: "" },
+        { title: "Mary's Boy Child", artist: "Boney M.", ytId: "" },
+        { title: "YMCA", artist: "Village People", ytId: "" },
+        { title: "Macho Man", artist: "Village People", ytId: "" },
+        { title: "In the Navy", artist: "Village People", ytId: "" },
+        { title: "Le Freak", artist: "Chic", ytId: "" },
+        { title: "Good Times", artist: "Chic", ytId: "" },
+        { title: "I Will Survive", artist: "Gloria Gaynor", ytId: "" },
+        { title: "I Feel Love", artist: "Donna Summer", ytId: "" },
+        { title: "Hot Stuff", artist: "Donna Summer", ytId: "" },
+        { title: "Last Dance", artist: "Donna Summer", ytId: "" },
+        { title: "September", artist: "Earth, Wind & Fire", ytId: "" },
+        { title: "Boogie Wonderland", artist: "Earth, Wind & Fire", ytId: "" },
+        { title: "That's the Way (I Like It)", artist: "KC and the Sunshine Band", ytId: "" },
+        { title: "Get Down Tonight", artist: "KC and the Sunshine Band", ytId: "" },
+        { title: "Funky Town", artist: "Lipps Inc.", ytId: "" },
+        { title: "Car Wash", artist: "Rose Royce", ytId: "" }
     ]
 };
 
@@ -523,6 +715,7 @@ let playbackTimeLeft = 30; // 30 segundos por canción
 const PLAYBACK_MAX_TIME = 30;
 const AUTOPLAY_NEXT_DELAY_MS = 250;
 let autoplayEnabled = false;
+let songGeneration = 0; // Contador para evitar callbacks de canciones anteriores
 let autoplayTimeout = null;
 
 // PeerJS P2P y Lector QR
@@ -542,6 +735,7 @@ let hostApiSyncInterval = null;
 let hostApiCardsInterval = null;
 let guestApiPollInterval = null;
 let guestCardGridSize = null;
+let guestLastStateTimestamp = 0; // Timestamp del último estado aplicado (evita overwrites con datos antiguos)
 
 // Nodos de Audio Visualizer
 let audioAnalyser = null;
@@ -875,6 +1069,16 @@ function getSongIdentityKeys(song) {
     return keys.filter(Boolean);
 }
 
+function escapeHtml(str) {
+    if (!str) return "";
+    return String(str)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
 // Configurar Drag and Drop para MP3s locales
 function setupDragAndDrop() {
     const dropZone = document.getElementById("drop-zone");
@@ -908,10 +1112,15 @@ function handleLocalFiles(event) {
 }
 
 function processLocalFiles(files) {
-    localFiles = [];
     const validAudioFiles = Array.from(files).filter(file => file.type.startsWith('audio/'));
     
+    // Evitar duplicados por nombre de archivo
+    const existingNames = new Set(localFiles.map(f => f.file.name));
+    
     validAudioFiles.forEach(file => {
+        if (existingNames.has(file.name)) return;
+        existingNames.add(file.name);
+        
         // Extraer artista y título del nombre del archivo
         // Ej: "Estopa - Como Camaron.mp3" -> Artista: Estopa, Título: Como Camaron
         const nameWithoutExt = file.name.substring(0, file.name.lastIndexOf('.')) || file.name;
@@ -1023,8 +1232,8 @@ function startGame() {
         card.innerHTML = `
             <div class="song-ball-num">${song.originalIndex + 1}</div>
             <div class="grid-song-info">
-                <div class="grid-song-title">${song.title}</div>
-                <div class="grid-song-artist">${song.artist}</div>
+                <div class="grid-song-title">${escapeHtml(song.title)}</div>
+                <div class="grid-song-artist">${escapeHtml(song.artist)}</div>
             </div>
         `;
         songsGrid.appendChild(card);
@@ -1054,9 +1263,12 @@ function startGame() {
 
     gameSessionId = `game-${Date.now()}-${Math.floor(Math.random() * 10000)}`;
 
+    // Reiniciar sincronizacion con la API (puede haber sido detenida por resetGame)
+    // Tambien publica el estado inicial de la sala
+    startHostApiSync();
+
     // Broadcast con reintentos para sincronizar invitados ya conectados o recien abiertos.
     broadcastGameStateWithRetry();
-    publishRoomStateToApi();
 
     playSound('draw');
 }
@@ -1147,8 +1359,8 @@ function updateHistory() {
         
         card.innerHTML = `
             <div class="ball-small">${songIndex + 1}</div>
-            <div class="history-title">${(isCurrent && !isRevealed) ? "???" : song.title}</div>
-            <div class="history-artist">${(isCurrent && !isRevealed) ? "Identifícala" : song.artist}</div>
+            <div class="history-title">${(isCurrent && !isRevealed) ? "???" : escapeHtml(song.title)}</div>
+            <div class="history-artist">${(isCurrent && !isRevealed) ? "Identifícala" : escapeHtml(song.artist)}</div>
         `;
         historyContainer.appendChild(card);
     }
@@ -1263,6 +1475,7 @@ async function fetchItunesPreview(artist, title) {
 
 async function playSongAudio(song) {
     const source = document.getElementById("music-source-select").value;
+    const currentGeneration = ++songGeneration;
     
     playbackTimeLeft = PLAYBACK_MAX_TIME;
     document.getElementById("timer-bar").style.width = "100%";
@@ -1279,6 +1492,9 @@ async function playSongAudio(song) {
         console.log(`Buscando preview de iTunes para: ${song.artist} - ${song.title}`);
         const previewUrl = await fetchItunesPreview(song.artist, song.title);
         
+        // Si la generación cambió, esta canción ya no es válida
+        if (currentGeneration !== songGeneration) return;
+        
         if (previewUrl) {
             updateAudioStatus("Cargando audio...", "loading");
             audioPlayerElement.src = previewUrl;
@@ -1288,10 +1504,12 @@ async function playSongAudio(song) {
             
             audioPlayerElement.play()
                 .then(() => {
+                    if (currentGeneration !== songGeneration) return;
                     startTimer();
                     updateAudioStatus("Sonando (iTunes Preview)", "success");
                 })
                 .catch(err => {
+                    if (currentGeneration !== songGeneration) return;
                     console.warn("Error reproduciendo audio de iTunes:", err);
                     updateAudioStatus("Error de reproducción", "error");
                     handleAudioError(err);
@@ -1310,10 +1528,12 @@ async function playSongAudio(song) {
         
         audioPlayerElement.play()
             .then(() => {
+                if (currentGeneration !== songGeneration) return;
                 startTimer();
                 updateAudioStatus("Sonando (Archivo Local)", "success");
             })
             .catch(err => {
+                if (currentGeneration !== songGeneration) return;
                 console.error("Error en reproducción local:", err);
                 updateAudioStatus("Error de archivo local", "error");
                 handleAudioError(err);
@@ -1327,6 +1547,12 @@ async function playSongAudio(song) {
 function stopAudio() {
     stopTimer();
     
+    // Detener ecualizador visual
+    if (visualizerAnimationId) {
+        cancelAnimationFrame(visualizerAnimationId);
+        visualizerAnimationId = null;
+    }
+    
     const vinyl = document.getElementById("vinyl-disk");
     vinyl.classList.remove("playing");
     togglePlayIcon(false);
@@ -1339,8 +1565,9 @@ function stopAudio() {
 
 function togglePlayback() {
     const vinyl = document.getElementById("vinyl-disk");
+    const isPaused = audioPlayerElement ? audioPlayerElement.paused : true;
     
-    if (vinyl.classList.contains("playing")) {
+    if (!isPaused) {
         vinyl.classList.remove("playing");
         togglePlayIcon(false);
         stopTimer();
@@ -1411,6 +1638,13 @@ function stopTimer() {
 function resetGame() {
     if (confirm("¿Estás seguro de que quieres reiniciar la partida actual? Perderás el historial.")) {
         stopAudio();
+        
+        // NO cerrar conexiones P2P: los invitados siguen conectados
+        // y receberan automaticamente la nueva partida cuando se inicie.
+        
+        // Detener intervalos de sincronizacion con la API
+        stopHostApiSync();
+        
         document.getElementById("setup-controls").classList.remove("hidden");
         document.getElementById("game-controls").classList.add("hidden");
         document.getElementById("board-idle-view").classList.remove("hidden");
@@ -1420,9 +1654,11 @@ function resetGame() {
         
         // Resetear rejillas y variables
         gameSongs = [];
+        drawOrder = [];
         playedSongs = [];
         currentIndex = -1;
         generatedCards = [];
+        gameSessionId = null;
         autoplayEnabled = false;
         if (autoplayTimeout) {
             clearTimeout(autoplayTimeout);
@@ -1508,8 +1744,8 @@ function generatePlayerCards() {
         cardSongs.forEach((song, idx) => {
             cellsHTML += `
                 <div class="card-cell" onclick="toggleCellMark(this)">
-                    <div class="cell-song-title">${song.title}</div>
-                    <div class="cell-song-artist">${song.artist}</div>
+                    <div class="cell-song-title">${escapeHtml(song.title)}</div>
+                    <div class="cell-song-artist">${escapeHtml(song.artist)}</div>
                 </div>
             `;
         });
@@ -1536,8 +1772,8 @@ function generatePlayerCards() {
         cardSongs.forEach(song => {
             printCellsHTML += `
                 <div class="print-card-cell">
-                    <div class="print-cell-title">${song.title}</div>
-                    <div class="print-cell-artist">${song.artist}</div>
+                    <div class="print-cell-title">${escapeHtml(song.title)}</div>
+                    <div class="print-cell-artist">${escapeHtml(song.artist)}</div>
                 </div>
             `;
         });
@@ -1618,7 +1854,7 @@ function validateCardById() {
     });
 
     // Validar Línea y Bingo
-    // Nota: Como los cartones son rejillas regulares (3x3, 4x4 o 5x5), calculamos por fila
+    // Una línea puede ser: fila, columna o diagonal
     const dim = Math.sqrt(card.gridSize); // 3, 4 o 5
     let hasLine = false;
 
@@ -1626,14 +1862,35 @@ function validateCardById() {
     for (let r = 0; r < dim; r++) {
         let rowPlayedCount = 0;
         for (let c = 0; c < dim; c++) {
-            const indexInCard = r * dim + c;
-            if (songVerificationList[indexInCard].hasPlayed) {
+            if (songVerificationList[r * dim + c].hasPlayed) {
                 rowPlayedCount++;
             }
         }
-        if (rowPlayedCount === dim) {
-            hasLine = true;
+        if (rowPlayedCount === dim) { hasLine = true; break; }
+    }
+
+    // Verificar columnas
+    if (!hasLine) {
+        for (let c = 0; c < dim; c++) {
+            let colPlayedCount = 0;
+            for (let r = 0; r < dim; r++) {
+                if (songVerificationList[r * dim + c].hasPlayed) {
+                    colPlayedCount++;
+                }
+            }
+            if (colPlayedCount === dim) { hasLine = true; break; }
         }
+    }
+
+    // Verificar diagonales (solo para cuadrículas cuadradas)
+    if (!hasLine) {
+        let diag1Count = 0;
+        let diag2Count = 0;
+        for (let i = 0; i < dim; i++) {
+            if (songVerificationList[i * dim + i].hasPlayed) diag1Count++;
+            if (songVerificationList[i * dim + (dim - 1 - i)].hasPlayed) diag2Count++;
+        }
+        if (diag1Count === dim || diag2Count === dim) { hasLine = true; }
     }
 
     const hasBingo = hitsCount === card.gridSize;
@@ -1658,8 +1915,8 @@ function validateCardById() {
     songVerificationList.forEach(song => {
         cellsHTML += `
             <div class="card-cell ${song.hasPlayed ? 'marked' : ''}" style="pointer-events: none;">
-                <div class="cell-song-title">${song.title}</div>
-                <div class="cell-song-artist">${song.artist}</div>
+                <div class="cell-song-title">${escapeHtml(song.title)}</div>
+                <div class="cell-song-artist">${escapeHtml(song.artist)}</div>
             </div>
         `;
     });
@@ -1804,12 +2061,22 @@ const peerConfig = {
     debug: 1
 };
 
+let hostPeerRetries = 0;
+const MAX_HOST_PEER_RETRIES = 5;
+
 function initHostPeer() {
+    if (hostPeerRetries >= MAX_HOST_PEER_RETRIES) {
+        console.error('No se pudo crear la sala P2P tras ' + MAX_HOST_PEER_RETRIES + ' intentos.');
+        alert('Error: No se pudo crear la sala de juego. Comprueba tu conexión a internet y recarga la página.');
+        return;
+    }
+    hostPeerRetries++;
     roomId = 'lotobongo-' + Math.floor(1000 + Math.random() * 9000);
     roomToken = generateRoomToken();
     peer = new Peer(roomId, peerConfig);
 
     peer.on('open', (id) => {
+        hostPeerRetries = 0;
         console.log('Host PeerJS id:', id);
         const shareUrl = `${window.location.origin}${window.location.pathname}?room=${id}&token=${encodeURIComponent(roomToken)}`;
         const inputUrl = document.getElementById("share-room-url");
@@ -1832,7 +2099,7 @@ function initHostPeer() {
 
         connection.on('close', () => {
             console.log('Conexion cerrada por el invitado:', connection.peer);
-            hostConnections = hostConnections.filter(c => c !== connection);
+            hostConnections = hostConnections.filter(c => c.peer !== connection.peer);
         });
         
         connection.on('error', (err) => {
@@ -1842,10 +2109,15 @@ function initHostPeer() {
         connection.on('open', () => {
             console.log('Conexion P2P abierta con exito:', connection.peer);
             
-            if (!hostConnections.includes(connection)) {
-                hostConnections.push(connection);
+            // Deduplicar: si ya existe una conexion con este peer, cerrar la vieja
+            const existingIndex = hostConnections.findIndex(c => c.peer === connection.peer);
+            if (existingIndex !== -1) {
+                const oldConn = hostConnections[existingIndex];
+                try { oldConn.close(); } catch (e) { /* ignore */ }
+                hostConnections.splice(existingIndex, 1);
             }
-
+            
+            hostConnections.push(connection);
             sendGameStateToGuest(connection);
         });
     });
@@ -1965,7 +2237,8 @@ async function syncHostCardsFromApi() {
         }
         let changed = false;
         cards.forEach((card) => {
-            if (card && !generatedCards.some(existing => existing.id === card.id)) {
+            // Solo aceptar cartones de la partida actual
+            if (card && card.gameSessionId === gameSessionId && !generatedCards.some(existing => existing.id === card.id)) {
                 generatedCards.push(card);
                 changed = true;
             }
@@ -1983,6 +2256,7 @@ function getCurrentGameState() {
     return {
         type: 'game-state',
         gameSessionId: gameSessionId,
+        stateTimestamp: Date.now(),
         hasStarted: gameSongs.length > 0,
         songs: gameSongs,
         playedSongs: playedSongs,
@@ -2019,7 +2293,8 @@ function handleHostConnectionData(connection, data) {
     }
 
     if (data.type === 'guest-ready') {
-        if (!hostConnections.includes(connection) && connection.open) {
+        const existingIndex = hostConnections.findIndex(c => c.peer === connection.peer);
+        if (existingIndex === -1 && connection.open) {
             hostConnections.push(connection);
         }
         sendGameStateToGuest(connection);
@@ -2028,7 +2303,8 @@ function handleHostConnectionData(connection, data) {
 
     if (data.type === 'register-card' && data.card) {
         console.log('Registrando carton recibido:', data.card);
-        if (!generatedCards.some(c => c.id === data.card.id)) {
+        // Solo aceptar cartones de la partida actual
+        if (data.gameSessionId === gameSessionId && !generatedCards.some(c => c.id === data.card.id)) {
             generatedCards.push(data.card);
             calculatePrizes();
             updateActiveCardsUI();
@@ -2116,7 +2392,7 @@ function connectToRoom(hostRoomId) {
             console.error('Error de conexion P2P:', err);
             stopGuestReadyLoop();
             stopGuestCardRegisterLoop();
-            if (emptyDesc) emptyDesc.innerHTML = `<span style="color: var(--danger);">Error de conexion: ${err.message || err}</span>`;
+            if (emptyDesc) emptyDesc.innerHTML = `<span style="color: var(--danger);">Error de conexion: ${escapeHtml(err.message || err)}</span>`;
         });
         
         conn.on('open', () => {
@@ -2231,10 +2507,11 @@ function registerGuestCardWithRetry(card) {
 async function registerGuestCardViaApi(card) {
     if (!card || !roomId) return;
     try {
+        const cardWithSession = { ...card, gameSessionId: gameSessionId };
         await postRoomApi(roomId, {
             action: "register-card",
             gameSessionId: gameSessionId,
-            card: card
+            card: cardWithSession
         });
         if (guestPendingCard && guestPendingCard.id === card.id) {
             stopGuestCardRegisterLoop();
@@ -2255,11 +2532,18 @@ function stopGuestCardRegisterLoop() {
 function handleGuestGameState(data, emptyDesc) {
     const songs = data.songs || [];
     const sessionId = data.gameSessionId || `legacy-${songs.length}`;
+    const incomingTimestamp = data.stateTimestamp || 0;
 
     if (!data.hasStarted || songs.length === 0) {
         if (emptyDesc) emptyDesc.textContent = "Conectado. Esperando que el organizador comience la partida...";
         return;
     }
+
+    // Ignorar estados más antiguos que el último aplicado (race condition P2P vs API polling)
+    if (incomingTimestamp < guestLastStateTimestamp && sessionId === gameSessionId) {
+        return;
+    }
+    guestLastStateTimestamp = incomingTimestamp;
 
     gameSongs = ensureSongIds(songs);
     playedSongs = data.playedSongs || [];
@@ -2411,8 +2695,14 @@ function calculatePrizes() {
     if (!costInput || !lineInput || !bingoInput) return;
     
     const cardCost = parseFloat(costInput.value) || 0;
-    const linePct = parseFloat(lineInput.value) || 0;
-    const bingoPct = parseFloat(bingoInput.value) || 0;
+    let linePct = parseFloat(lineInput.value) || 0;
+    let bingoPct = parseFloat(bingoInput.value) || 0;
+    
+    // Validar que la suma no supere 100%
+    if (linePct + bingoPct > 100) {
+        bingoPct = Math.max(0, 100 - linePct);
+        bingoInput.value = bingoPct;
+    }
     
     const totalCards = generatedCards.length;
     const totalCollected = totalCards * cardCost;
