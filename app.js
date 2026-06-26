@@ -808,22 +808,40 @@ document.addEventListener("DOMContentLoaded", () => {
 
     // Desbloqueo de audio para iOS/iPadOS
     // Safari requiere que la primera reproducción venga de un gesto del usuario.
-    // Reproducimos un silencio en el primer toque para desbloquear el audio.
+    // iPad Safari es más restrictivo — necesitamos AudioContext + Audio element
     let audioUnlocked = false;
     function unlockAudio() {
         if (audioUnlocked) return;
         audioUnlocked = true;
         try {
+            // Método 1: AudioContext (funciona mejor en iPad)
+            if (audioCtx && audioCtx.state === "suspended") {
+                audioCtx.resume().then(() => {
+                    console.log("AudioContext desbloqueado");
+                }).catch(() => {});
+            }
+
+            // Método 2: Audio element con volumen bajo (no cero)
             const silent = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=");
-            silent.volume = 0;
+            silent.volume = 0.01;
             silent.play().then(() => {
-                console.log("Audio desbloqueado para iOS");
-                // También reanudar AudioContext si está suspendido
-                if (audioCtx && audioCtx.state === "suspended") {
-                    audioCtx.resume();
-                }
+                console.log("Audio element desbloqueado");
+                // Subir volumen tras play exitoso
+                silent.volume = 1;
             }).catch(() => {});
-        } catch (e) {}
+
+            // Método 3: Crear buffer en AudioContext y reproducir (más fiable en iPad)
+            if (audioCtx) {
+                const buffer = audioCtx.createBuffer(1, 1, 22050);
+                const source = audioCtx.createBufferSource();
+                source.buffer = buffer;
+                source.connect(audioCtx.destination);
+                source.start(0);
+                console.log("AudioContext buffer desbloqueado");
+            }
+        } catch (e) {
+            console.warn("Error en unlockAudio:", e);
+        }
         // Limpiar listeners tras el primer toque
         document.removeEventListener("touchstart", unlockAudio);
         document.removeEventListener("click", unlockAudio);
@@ -1513,26 +1531,39 @@ async function playSongAudio(song) {
     togglePlayIcon(true);
 
     // Función para reproducir con retry en iOS
-    // iOS requiere que el audio esté cargado (canplay) ANTES de llamar a play()
+    // iPad Safari bloquea reproducción cross-origin; fetch → blob → ObjectURL es más fiable
+    let currentBlobUrl = null;
     function attemptPlay(url, statusLabel, onFail) {
-        audioPlayerElement.src = url;
-        audioPlayerElement.load();
+        console.log("[Audio] attemptPlay:", url);
         initVisualizer();
 
-        function doPlay() {
+        // Limpiar blob URL anterior
+        if (currentBlobUrl) {
+            URL.revokeObjectURL(currentBlobUrl);
+            currentBlobUrl = null;
+        }
+
+        function doPlay(playUrl) {
             if (currentGeneration !== songGeneration) return;
+            console.log("[Audio] doPlay - url:", playUrl);
+            audioPlayerElement.src = playUrl;
+            audioPlayerElement.load();
             audioPlayerElement.play()
                 .then(() => {
+                    console.log("[Audio] play OK");
                     if (currentGeneration !== songGeneration) return;
                     startTimer();
                     updateAudioStatus(statusLabel, "success");
                 })
                 .catch(err => {
+                    console.error("[Audio] play error:", err.name, err.message);
                     if (currentGeneration !== songGeneration) return;
                     if (err.name === "NotAllowedError") {
                         updateAudioStatus("Toca para activar audio", "loading");
                         const retryHandler = () => {
+                            console.log("[Audio] retry tras tap");
                             audioPlayerElement.play().then(() => {
+                                console.log("[Audio] retry OK");
                                 if (currentGeneration !== songGeneration) return;
                                 startTimer();
                                 updateAudioStatus(statusLabel, "success");
@@ -1548,18 +1579,24 @@ async function playSongAudio(song) {
                 });
         }
 
-        // Esperar a que el audio esté listo para reproducir
-        audioPlayerElement.addEventListener("canplay", function onCanPlay() {
-            audioPlayerElement.removeEventListener("canplay", onCanPlay);
-            doPlay();
-        }, { once: true });
-
-        // Timeout: si tarda más de 5s en cargar, intentar de todas formas
-        setTimeout(() => {
-            if (currentGeneration !== songGeneration) return;
-            if (audioPlayerElement.readyState >= 3) return; // Ya está listo
-            doPlay();
-        }, 5000);
+        // Estrategia 1: fetch como blob (más fiable en iPad)
+        fetch(url)
+            .then(res => {
+                if (!res.ok) throw new Error("fetch failed");
+                return res.blob();
+            })
+            .then(blob => {
+                if (currentGeneration !== songGeneration) return;
+                currentBlobUrl = URL.createObjectURL(blob);
+                console.log("[Audio] blob URL created");
+                doPlay(currentBlobUrl);
+            })
+            .catch(fetchErr => {
+                console.warn("[Audio] fetch blob failed, trying direct URL:", fetchErr);
+                if (currentGeneration !== songGeneration) return;
+                // Fallback: URL directa
+                doPlay(url);
+            });
     }
 
     if (source !== "local") {
