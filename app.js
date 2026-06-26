@@ -806,6 +806,31 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     setupDragAndDrop();
 
+    // Desbloqueo de audio para iOS/iPadOS
+    // Safari requiere que la primera reproducción venga de un gesto del usuario.
+    // Reproducimos un silencio en el primer toque para desbloquear el audio.
+    let audioUnlocked = false;
+    function unlockAudio() {
+        if (audioUnlocked) return;
+        audioUnlocked = true;
+        try {
+            const silent = new Audio("data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YQAAAAA=");
+            silent.volume = 0;
+            silent.play().then(() => {
+                console.log("Audio desbloqueado para iOS");
+                // También reanudar AudioContext si está suspendido
+                if (audioCtx && audioCtx.state === "suspended") {
+                    audioCtx.resume();
+                }
+            }).catch(() => {});
+        } catch (e) {}
+        // Limpiar listeners tras el primer toque
+        document.removeEventListener("touchstart", unlockAudio);
+        document.removeEventListener("click", unlockAudio);
+    }
+    document.addEventListener("touchstart", unlockAudio, { once: true });
+    document.addEventListener("click", unlockAudio, { once: true });
+
     // Detección de sala P2P para invitados
     const urlParams = new URLSearchParams(window.location.search);
     if (urlParams.has('room')) {
@@ -1487,6 +1512,38 @@ async function playSongAudio(song) {
     document.getElementById("btn-play-pause").disabled = false;
     togglePlayIcon(true);
 
+    // Función para reproducir con retry en iOS
+    function attemptPlay(url, statusLabel, onFail) {
+        audioPlayerElement.src = url;
+        initVisualizer();
+        audioPlayerElement.play()
+            .then(() => {
+                if (currentGeneration !== songGeneration) return;
+                startTimer();
+                updateAudioStatus(statusLabel, "success");
+            })
+            .catch(err => {
+                if (currentGeneration !== songGeneration) return;
+                // iOS bloquea play sin gesto del usuario → mostrar botón para reintentar
+                if (err.name === "NotAllowedError") {
+                    updateAudioStatus("Toca para activar audio", "loading");
+                    const retryHandler = () => {
+                        audioPlayerElement.play().then(() => {
+                            if (currentGeneration !== songGeneration) return;
+                            startTimer();
+                            updateAudioStatus(statusLabel, "success");
+                        }).catch(() => onFail());
+                        document.removeEventListener("click", retryHandler);
+                        document.removeEventListener("touchstart", retryHandler);
+                    };
+                    document.addEventListener("click", retryHandler, { once: true });
+                    document.addEventListener("touchstart", retryHandler, { once: true });
+                } else {
+                    onFail();
+                }
+            });
+    }
+
     if (source !== "local") {
         updateAudioStatus("Buscando en iTunes...", "loading");
         console.log(`Buscando preview de iTunes para: ${song.artist} - ${song.title}`);
@@ -1497,23 +1554,10 @@ async function playSongAudio(song) {
         
         if (previewUrl) {
             updateAudioStatus("Cargando audio...", "loading");
-            audioPlayerElement.src = previewUrl;
-            
-            // Inicializar ecualizador visual
-            initVisualizer();
-            
-            audioPlayerElement.play()
-                .then(() => {
-                    if (currentGeneration !== songGeneration) return;
-                    startTimer();
-                    updateAudioStatus("Sonando (iTunes Preview)", "success");
-                })
-                .catch(err => {
-                    if (currentGeneration !== songGeneration) return;
-                    console.warn("Error reproduciendo audio de iTunes:", err);
-                    updateAudioStatus("Error de reproducción", "error");
-                    handleAudioError(err);
-                });
+            attemptPlay(previewUrl, "Sonando (iTunes Preview)", () => {
+                updateAudioStatus("Error de reproducción", "error");
+                handleAudioError();
+            });
         } else {
             console.warn("No se encontró preview en iTunes para:", song.title);
             updateAudioStatus("No disponible en iTunes", "error");
@@ -1521,23 +1565,11 @@ async function playSongAudio(song) {
         }
     } else if (source === "local" && song.url) {
         updateAudioStatus("Cargando MP3 local...", "loading");
-        audioPlayerElement.src = song.url;
-        
-        // Inicializar ecualizador visual
-        initVisualizer();
-        
-        audioPlayerElement.play()
-            .then(() => {
-                if (currentGeneration !== songGeneration) return;
-                startTimer();
-                updateAudioStatus("Sonando (Archivo Local)", "success");
-            })
-            .catch(err => {
-                if (currentGeneration !== songGeneration) return;
-                console.error("Error en reproducción local:", err);
-                updateAudioStatus("Error de archivo local", "error");
-                handleAudioError(err);
-            });
+        attemptPlay(song.url, "Sonando (Archivo Local)", () => {
+            console.error("Error en reproducción local");
+            updateAudioStatus("Error de archivo local", "error");
+            handleAudioError();
+        });
     } else {
         updateAudioStatus("Modo sin audio", "idle");
         startTimer();
@@ -1579,6 +1611,11 @@ function togglePlayback() {
         vinyl.classList.add("playing");
         togglePlayIcon(true);
         startTimer();
+
+        // Reanudar AudioContext en iOS si está suspendido
+        if (audioCtx && audioCtx.state === "suspended") {
+            audioCtx.resume();
+        }
 
         if (audioPlayerElement) {
             audioPlayerElement.play().catch(e => console.error(e));
