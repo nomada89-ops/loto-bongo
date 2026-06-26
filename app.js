@@ -1513,35 +1513,53 @@ async function playSongAudio(song) {
     togglePlayIcon(true);
 
     // Función para reproducir con retry en iOS
+    // iOS requiere que el audio esté cargado (canplay) ANTES de llamar a play()
     function attemptPlay(url, statusLabel, onFail) {
         audioPlayerElement.src = url;
+        audioPlayerElement.load();
         initVisualizer();
-        audioPlayerElement.play()
-            .then(() => {
-                if (currentGeneration !== songGeneration) return;
-                startTimer();
-                updateAudioStatus(statusLabel, "success");
-            })
-            .catch(err => {
-                if (currentGeneration !== songGeneration) return;
-                // iOS bloquea play sin gesto del usuario → mostrar botón para reintentar
-                if (err.name === "NotAllowedError") {
-                    updateAudioStatus("Toca para activar audio", "loading");
-                    const retryHandler = () => {
-                        audioPlayerElement.play().then(() => {
-                            if (currentGeneration !== songGeneration) return;
-                            startTimer();
-                            updateAudioStatus(statusLabel, "success");
-                        }).catch(() => onFail());
-                        document.removeEventListener("click", retryHandler);
-                        document.removeEventListener("touchstart", retryHandler);
-                    };
-                    document.addEventListener("click", retryHandler, { once: true });
-                    document.addEventListener("touchstart", retryHandler, { once: true });
-                } else {
-                    onFail();
-                }
-            });
+
+        function doPlay() {
+            if (currentGeneration !== songGeneration) return;
+            audioPlayerElement.play()
+                .then(() => {
+                    if (currentGeneration !== songGeneration) return;
+                    startTimer();
+                    updateAudioStatus(statusLabel, "success");
+                })
+                .catch(err => {
+                    if (currentGeneration !== songGeneration) return;
+                    if (err.name === "NotAllowedError") {
+                        updateAudioStatus("Toca para activar audio", "loading");
+                        const retryHandler = () => {
+                            audioPlayerElement.play().then(() => {
+                                if (currentGeneration !== songGeneration) return;
+                                startTimer();
+                                updateAudioStatus(statusLabel, "success");
+                            }).catch(() => onFail());
+                            document.removeEventListener("click", retryHandler);
+                            document.removeEventListener("touchstart", retryHandler);
+                        };
+                        document.addEventListener("click", retryHandler, { once: true });
+                        document.addEventListener("touchstart", retryHandler, { once: true });
+                    } else {
+                        onFail();
+                    }
+                });
+        }
+
+        // Esperar a que el audio esté listo para reproducir
+        audioPlayerElement.addEventListener("canplay", function onCanPlay() {
+            audioPlayerElement.removeEventListener("canplay", onCanPlay);
+            doPlay();
+        }, { once: true });
+
+        // Timeout: si tarda más de 5s en cargar, intentar de todas formas
+        setTimeout(() => {
+            if (currentGeneration !== songGeneration) return;
+            if (audioPlayerElement.readyState >= 3) return; // Ya está listo
+            doPlay();
+        }, 5000);
     }
 
     if (source !== "local") {
